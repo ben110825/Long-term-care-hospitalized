@@ -101,7 +101,7 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 	private Complex[] to;
 	private Complex weightFftTimesFrom2;
 	private Complex tempComplex;
-
+	
 	public DiscreteFourierTransform(int numberFftPoints, boolean invert) {
 
 		initLogger();
@@ -520,6 +520,7 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 	double shortVoiceAvg = 0;
 
 	public void getBaby(double voice[]) {
+		System.out.println();
 		int peakIdx[] = new int[pkNo];
 		double peakValue[] = new double[pkNo];
 		boolean isPeak[] = new boolean[FFTNo];
