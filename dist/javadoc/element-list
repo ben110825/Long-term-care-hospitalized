@@ -1,0 +1,10 @@
+cclo
+edu.cmu.sphinx.frontend
+edu.cmu.sphinx.frontend.endpoint
+edu.cmu.sphinx.frontend.filter
+edu.cmu.sphinx.frontend.transform
+edu.cmu.sphinx.frontend.util
+edu.cmu.sphinx.frontend.window
+edu.cmu.sphinx.util
+edu.cmu.sphinx.util.machlearn
+edu.cmu.sphinx.util.props
