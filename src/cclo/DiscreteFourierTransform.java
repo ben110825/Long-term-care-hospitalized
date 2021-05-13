@@ -669,12 +669,8 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 			findPeak(voice);
 		}
 	}
-
-	int countPeak = 0;
-	ArrayList<String> cough = new ArrayList();
-
 	public void findPeak(double voice[]) {
-		ArrayList fivePeak = new ArrayList();
+		ArrayList<Integer> fivePeak = new ArrayList();
 		for (int i = 0; i < FFTNo - 5; i++) {
 
 			// System.out.println(voice[i]);
@@ -711,38 +707,11 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 
 			}
 		}
-		countPeak++;
-		// System.out.println(countPeak);
-		if (countPeak > 170) {
-			cough.add(fivePeak.toString());
-			System.out.println(cough.toString());
-			pMain.tFrame.putData(fivePeak);
-			if(cough.size() >= 20) {
-				storeVoice(cough, countPeak);
-				cough.clear();
-			}
+		pMain.tFrame.panel.updatePanel(fivePeak);
 
-		}
-	}
-
-	public void storeVoice(ArrayList al,int count) {
-		try {
-			String testPath = "D:\\Project\\Level_19_06_15\\test.txt";
-			BufferedWriter writer = new BufferedWriter(new FileWriter(testPath,true));
-			
-			while(!al.isEmpty()) {
-				writer.append(al.toString()+"\n");
-
-				al.clear();
-			}
-			System.out.println("----done-----");
-			writer.close();
-		}
-		catch(IOException e) {
-			
-		}
 		
 	}
+
 
 	public void setMagThresh(double magThresh_) {
 		SPEC_RATIO = magThresh_;
