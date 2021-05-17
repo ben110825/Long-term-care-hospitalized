@@ -707,6 +707,7 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 
 			}
 		}
+		System.out.println(fivePeak);
 		pMain.tFrame.panel.updatePanel(fivePeak);
 
 		

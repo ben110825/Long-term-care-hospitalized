@@ -8,6 +8,7 @@ package cclo;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
+import java.awt.Event;
 import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -26,8 +27,32 @@ import javax.swing.JTextArea;
  * @author ben11
  */
 public class DemoFrame extends JFrame {
-	PeakPanel panel = new PeakPanel();
-	DemoFrame() {
+	Main main;
+	PeakPanel panel;
+	
+	
+	DemoFrame(Main main_) {
+		main = main_;
+		
+		panelwhiledraw();
+		
+		
+		
+		
+		
+		
+	}
+	/*public void someButtonActionPerformed( e) { //This is not working
+
+	    this.remove(panel);
+	    panel = new PeakPanel();
+	    this.add(panel);
+	    panel.revalidate();
+	    panel.repaint();
+	}*/
+	public void panelwhiledraw()
+	{
+		panel = new PeakPanel(main);
 		this.add(panel);
 		this.setTitle("Peak Panel");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -35,10 +60,9 @@ public class DemoFrame extends JFrame {
 		this.pack();
 		this.setVisible(true);
 		this.setLocationRelativeTo(null);
+		
+		
 	}
 
-
-	public static void main() {
-
-	}
+	
 }

@@ -30,6 +30,7 @@ public class Main implements Share {
     public LevName levName;
     public ArrowPan arrowPan;
     public DemoFrame tFrame;
+    public static PeakPanel PeakPanel; 
     // public PercentPan percPan;
     public int nodeType;
     public int width, height;
@@ -75,6 +76,7 @@ public class Main implements Share {
         // specFr = new SpecGram(this);
         levName = new LevName(this);
         arrowPan = new ArrowPan(this);
+        //PeakPanel = new PeakPanel(this);
 
         ioPan = new IOPan(this);
 
@@ -85,7 +87,7 @@ public class Main implements Share {
         freqFr = new SpecLineChart("薩克斯風音準測試軟體", this);
         // freqFr.pack();
         // RefineryUtilities.centerFrameOnScreen(freqFr);
-        tFrame  = new DemoFrame();
+        tFrame  = new DemoFrame(this);
         freqFr.setVisible(true);
         levName.setVisible(true);
         freqFr.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -119,6 +121,7 @@ public class Main implements Share {
             try {
                 Data input = aed.dff.getData();
                 DoubleData output = (DoubleData) input;
+                
             } catch (Exception e) {
                 System.out.println(e);
             }
