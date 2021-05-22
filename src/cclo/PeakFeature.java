@@ -1,96 +1,73 @@
 package cclo;
 
 import java.io.IOException;
-
 import java.util.ArrayList;
 
+public class PeakFeature {
 
- 
+	ArrayList<ArrayList> peak = new ArrayList();
 
-public  class PeakFeature {
+	FeatureType type;
 
- ArrayList<ArrayList> peak = new ArrayList();
+	PeakFeature() {
+		this.type = FeatureType.未辨識;
 
- FeatureType type;
+	}
 
-PeakFeature(){
-	this.type = FeatureType.未辨識;
-	
-}
- 
+	PeakFeature(ArrayList<ArrayList> peak, FeatureType type) {
+		
+		this.peak = peak;
+		this.type = type;// 存擋用這個建構子
+		
+	}
 
- PeakFeature(ArrayList<ArrayList> peak,FeatureType type){
- this.peak = peak;
+	PeakFeature(ArrayList<ArrayList> peak) {
+		
+		this.peak = peak;
+		this.type = FeatureType.未辨識;		// 用這個建構子
 
- this.type = type;
+	}
+	protected void analize(){
 
- //存擋用這個建構子
+		FeatureType resultType = FeatureType.未辨識;
 
- 
+		// ......
 
-}
+		// ......
 
- PeakFeature(ArrayList<ArrayList> peak){
+		// ......辨識完更改type
 
- 
+		setType(resultType);
 
- this.peak = peak;
+	}
 
- this.type = FeatureType.未辨識;
+	protected ArrayList<ArrayList> getPeak() {
 
- //用這個建構子
+		return peak;
 
- 
+	}
 
-}
+	protected void setPeak(ArrayList<ArrayList> peak) {
 
- protected void analize()
+		this.peak = peak;
 
-{
+	}
 
- FeatureType resultType = FeatureType.未辨識;
+	protected FeatureType getType() {
 
- //......
+		return type;
 
- //......
+	}
 
- //......辨識完更改type
+	protected void setType(FeatureType type) {
 
- setType(resultType);
+		this.type = type;
 
-}
+	}
 
- 
-
- protected ArrayList<ArrayList> getPeak() {
-
- return peak;
-
-}
-
- protected void setPeak(ArrayList<ArrayList> peak) {
-
- this.peak = peak;
-
-}
-
- protected FeatureType getType() {
-
- return type;
-
-}
-
- protected void setType(FeatureType type) {
-
- this.type = type;
-
-}
- public void recordingFeature(ArrayList al) {
-	 peak.add(al);
- }
-
-
-
+	public void recordingFeature(ArrayList al) {
+		peak.add(al);
+	}
  
 
 }

@@ -520,7 +520,6 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 	double shortVoiceAvg = 0;
 
 	public void getBaby(double voice[]) {
-		System.out.println();
 		int peakIdx[] = new int[pkNo];
 		double peakValue[] = new double[pkNo];
 		boolean isPeak[] = new boolean[FFTNo];
@@ -671,8 +670,20 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 	}
 	int peakCount = 0;
 	ArrayList<Integer> fivePeak;
+	
+	protected boolean isRecordFlag() {
+		return recordFlag;
+	}
+
+	protected void setRecordFlag(boolean recordFlag) {
+		this.recordFlag = recordFlag;
+	}
+	PeakFeature temp;
+	int countRecord =0;
+	boolean recordFlag = false;
 	public void findPeak(double voice[]) {
 		fivePeak = new ArrayList();
+		System.out.println(recordFlag);
 		for (int i = 0; i < FFTNo - 5; i++) {
 			// System.out.println(voice[i]);
 			int leftBoundary, rightBoundary, mid;
@@ -714,11 +725,41 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 			pMain.tFrame.panel.updatePanel(fivePeak);
 		}
 		else {
-			System.out.println("測試環境音中...");
+			System.out.println("測試環境音中..."+countRecord);
+		}
+		if(recordFlag == true){
+			System.out.println("錄音區塊"+ countRecord);
+			if(countRecord == 0)startpeakRecord();
+			countRecord++;
+			temp.recordingFeature(fivePeak);
+		}
+		if(recordFlag == false & countRecord > 0)
+		{
+			System.out.println("錄音停止區塊");
+			stoppeakRecord(temp);
+			countRecord = 0;
 		}
 	}
-	public ArrayList getFivePeak() {
+	public ArrayList<Integer> getFivePeak() {
 		return fivePeak;
+	}
+	public void startpeakRecord()
+	{
+		temp = new PeakFeature();	
+	}
+	public void stoppeakRecord(PeakFeature temp)
+	{
+		String file = "/Users/mamingzheng/Documents/Long-term-care-hospitalized/test.txt";
+		try {
+			BufferedWriter buw = new BufferedWriter(new FileWriter(file));
+			String st = temp.toString();
+			buw.write(st);
+			buw.close();
+			
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 	}
 
 	public void setMagThresh(double magThresh_) {

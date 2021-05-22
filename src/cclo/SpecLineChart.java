@@ -221,28 +221,14 @@ public class SpecLineChart extends JFrame implements ActionListener{
 	boolean flag2 = true;
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		BufferedWriter buw;
-		String file = "D:\\project\\Long-term-care-hospitalized\\test.txt";
-		ArrayList temp = new ArrayList();
 		
-		if(e.getSource()==jb1) {	
-			System.out.println(e.getSource());
+		if(e.getSource() == jb1) {	
 			JOptionPane.showMessageDialog(this,"開始錄音");
-			main.tFrame.panel.initPeak();
-			while(e.getSource()==jb2) {
-				try {
-					buw = new BufferedWriter(new FileWriter(file));
-					String st = temp.toString();
-					buw.write(st);
-					buw.close();
-					JOptionPane.showMessageDialog(this,"將"+st+"寫入"+file+"\r\n","寫入完成", JOptionPane.INFORMATION_MESSAGE);
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				break;
-				//temp.add(main.dff.getFivePeak());
-			}
+			main.dff.setRecordFlag(true);			
+		}else if(e.getSource() ==jb2)
+		{
+			main.dff.setRecordFlag(false);
+			JOptionPane.showMessageDialog(this,"停止錄音");
 		}
 		
 		
