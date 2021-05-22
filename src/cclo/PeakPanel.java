@@ -16,7 +16,6 @@ public class PeakPanel extends JPanel{
 	int y = 0;
 	int count = 0;
 	public PeakPanel(Main main_) {
-		
 		// TODO Auto-generated constructor stub
 		this.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
 		this.setBackground(Color.white);
