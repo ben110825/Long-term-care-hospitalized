@@ -23,8 +23,8 @@ public class IOPan extends JPanel {
     Scorer father;
     JTextField tfLevel = new JTextField();
     JTextField tfError = new JTextField();
-    JLabel lbLevel = new JLabel("音高");
-    JLabel lbError = new JLabel("誤差");
+    JLabel lbLevel = new JLabel("樣本");
+    JLabel lbError = new JLabel("檔案");
     String name[] = {
         "0 Do", "0 Do+", "0 Re", "0 Re+", "0 Mi", "0 Fa", "0 Fa+", "0 Sol", "0 Sol+", "0 La", "0 La+", "0 Si",
         "1 Do", "1 Do+", "1 Re", "1 Re+", "1 Mi", "1 Fa", "1 Fa+", "1 Sol", "1 Sol+", "1 La", "1 La+", "1 Si",
@@ -32,7 +32,7 @@ public class IOPan extends JPanel {
         "3 Do", "3 Do+", "3 Re", "3 Re+", "3 Mi", "3 Fa", "3 Fa+", "3 Sol", "3 Sol+", "3 La", "3 La+", "3 Si",
         "4 Do", "4 Do+", "4 Re", "4 Re+", "4 Mi", "4 Fa", "4 Fa+", "4 Sol", "4 Sol+", "4 La", "4 La+", "4 Si",
         "5 Do", "5 Do+", "5 Re"};
-    String toneName[] = {"B-", "E-", "C"};
+    String toneName[] = {"咳嗽", "打鼾", "噴嚏"};
 
     int levCounter[] = new int[100];
     int current;
@@ -40,8 +40,8 @@ public class IOPan extends JPanel {
     int extLev;
     double ratio = 0.0;
     JTextField tfRatio = new JTextField();
-    JLabel lbPerc = new JLabel("正確率");
-    JLabel lbTone = new JLabel("調子");
+    JLabel lbPerc = new JLabel("狀態");
+    JLabel lbTone = new JLabel("類別");
     JComboBox cbTone = new JComboBox(toneName);
     static int mNo = 0;
     int bias = 0;
@@ -78,7 +78,7 @@ public class IOPan extends JPanel {
         // lbError.setIcon(levelIcon);
         lbError.setOpaque(true);
         lbError.setForeground(Color.WHITE);
-        lbError.setBackground(new Color(70, 90, 140));
+        lbError.setBackground(new Color(140, 60, 32));
         //tfError.setBackground(new Color(70, 90, 140));
         //tfError.setForeground(Color.WHITE);
         add(lbLevel);
@@ -110,13 +110,13 @@ public class IOPan extends JPanel {
             public void itemStateChanged(ItemEvent e) {
                 selectedTone = cbTone.getSelectedItem().toString();
                 switch (selectedTone) {
-                    case "B-":
+                    case "咳嗽":
                         bias = 0;
                         break;
-                    case "E-":
+                    case "打鼾":
                         bias = -5;
                         break;
-                    case "C":
+                    case "噴嚏":
                         bias = -2;
                         break;
                 }

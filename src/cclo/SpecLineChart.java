@@ -1,13 +1,12 @@
 package cclo;
 
+import java.awt.*;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.GridLayout;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
+import javax.swing.*;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -34,6 +33,7 @@ public class SpecLineChart extends JFrame {
     XYSeries series1;
     Main main;
     // final ChartPanel chartPanel;
+    public static JTextField jtf1; //類別输入框
 
     public SpecLineChart(final String title, Main main_) {
         super(title);
@@ -46,15 +46,47 @@ public class SpecLineChart extends JFrame {
         //  setContentPane(chartPanel);
         this.setBounds(50, 50, 1200, 600);
 
-        Container container = getContentPane();
+        Container container = getContentPane();//创建一个容器，方便向框架内添加组件
         container.setLayout(new GridLayout(2, 1, 20, 20));
+
         JPanel h1Pan = new JPanel();
         h1Pan.setLayout(new GridLayout(2, 1, 5, 5));
+
         h1Pan.add(main.ioPan);
         JPanel q2Pan = new JPanel();
-        q2Pan.setLayout(new GridLayout(2, 1, 5, 5));
-        q2Pan.add(main.levName);
-        q2Pan.add(main.arrowPan);
+        q2Pan.setLayout(new GridLayout(2, 5, 5, 5));
+        JButton jb1 = new JButton("開始錄音");
+        jb1.setFont(new Font("Serif", Font.BOLD, 40));
+        q2Pan.add(jb1);
+        JButton jb2 = new JButton("停止錄音");
+        jb2.setFont(new Font("Serif", Font.BOLD, 40));
+        q2Pan.add(jb2);
+        JButton jb3 = new JButton("儲存樣本");
+        jb3.setFont(new Font("Serif", Font.BOLD, 40));
+        q2Pan.add(jb3);
+        JButton jb4 = new JButton("進行訓練");
+        jb4.setFont(new Font("Serif", Font.BOLD, 40));
+        q2Pan.add(jb4);
+        JButton jb9 = new JButton("進行辨識");
+        jb9.setFont(new Font("Serif", Font.BOLD, 40));
+        q2Pan.add(jb9);
+        jtf1 = new JTextField("");//類別輸入框
+        jtf1.setFont(new Font("Serif", Font.BOLD, 40));
+        q2Pan.add(jtf1);
+        JButton jb5 = new JButton("加入類別");
+        jb5.setFont(new Font("Serif", Font.BOLD, 40));
+        q2Pan.add(jb5);
+        JButton jb6 = new JButton("清空樣本");
+        jb6.setFont(new Font("Serif", Font.BOLD, 40));
+        q2Pan.add(jb6);
+        JButton jb7= new JButton("載辨識檔");
+        jb7.setFont(new Font("Serif", Font.BOLD, 40));
+        q2Pan.add(jb7);
+        JButton jb8 = new JButton("存辨識檔");
+        jb8.setFont(new Font("Serif", Font.BOLD, 40));
+        q2Pan.add(jb8);
+//        q2Pan.add(main.levName);
+//        q2Pan.add(main.arrowPan);
         h1Pan.add(q2Pan);
         container.add(h1Pan);
         container.add(chartPanel);
@@ -98,7 +130,7 @@ public class SpecLineChart extends JFrame {
 
         // create the chart...
         final JFreeChart chart = ChartFactory.createXYLineChart(
-                "Frequency of Saxophone", // chart title
+                "Sound waveform diagram", // chart title
                 "Frequency", // x axis label
                 "Amplitude", // y axis label
                 dataset, // data

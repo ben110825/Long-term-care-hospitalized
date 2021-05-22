@@ -84,7 +84,7 @@ public class Main implements Share {
         scorer = new Scorer(this);
         // specFr.setVisible(false);
         // scorer.setVisible(false);
-        freqFr = new SpecLineChart("薩克斯風音準測試軟體", this);
+        freqFr = new SpecLineChart("Body Signal", this);
         // freqFr.pack();
         // RefineryUtilities.centerFrameOnScreen(freqFr);
         tFrame  = new DemoFrame(this);
@@ -95,29 +95,29 @@ public class Main implements Share {
     }
 
     public static void main(String[] args) {
-        Main aed = new Main();
-        
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        double sWidth = screenSize.getWidth();
-        double sHeight = screenSize.getHeight();
+            Main aed = new Main();
+
+            Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+            double sWidth = screenSize.getWidth();
+            double sHeight = screenSize.getHeight();
 
 
-        aed.initVoice();
-        aed.initFrames();
+            aed.initVoice();
+            aed.initFrames();
 
 
-        //++ Window size
-        aed.freqFr.setBounds(150, 150, (int) sWidth - 300, (int) sHeight - 300);
+            //++ Window size
+            aed.freqFr.setBounds(150, 150, (int) sWidth - 300, (int) sHeight - 300);
 
-        aed.levName.init();
-        
-        //start the microphone or exit if the programm if this is not possible
-        if (!aed.mic.startRecording()) {
-            System.out.println("Cannot start microphone.");
-            System.exit(1);
-        }
+            aed.levName.init();
 
-        while (true) {
+            //start the microphone or exit if the programm if this is not possible
+            if (!aed.mic.startRecording()) {
+                System.out.println("Cannot start microphone.");
+        System.exit(1);
+    }
+
+            while (true) {
             try {
                 Data input = aed.dff.getData();
                 DoubleData output = (DoubleData) input;
