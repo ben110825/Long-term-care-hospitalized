@@ -670,10 +670,10 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 		}
 	}
 	int peakCount = 0;
+	ArrayList<Integer> fivePeak;
 	public void findPeak(double voice[]) {
-		ArrayList<Integer> fivePeak = new ArrayList();
+		fivePeak = new ArrayList();
 		for (int i = 0; i < FFTNo - 5; i++) {
-
 			// System.out.println(voice[i]);
 			int leftBoundary, rightBoundary, mid;
 			leftBoundary = i;
@@ -717,7 +717,9 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 			System.out.println("測試環境音中...");
 		}
 	}
-
+	public ArrayList getFivePeak() {
+		return fivePeak;
+	}
 
 	public void setMagThresh(double magThresh_) {
 		SPEC_RATIO = magThresh_;

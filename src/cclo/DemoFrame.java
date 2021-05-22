@@ -33,7 +33,6 @@ public class DemoFrame extends JFrame {
 	
 	DemoFrame(Main main_) {
 		main = main_;
-		
 		panel = new PeakPanel(main);
 		this.add(panel);
 		this.setTitle("Peak Panel");
