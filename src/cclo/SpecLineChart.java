@@ -4,8 +4,14 @@ import java.awt.*;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+
 import javax.swing.*;
 
 import org.jfree.chart.ChartFactory;
@@ -27,11 +33,12 @@ import org.jfree.ui.RefineryUtilities;
  * data from an {@link XYDataset}.
  *
  */
-public class SpecLineChart extends JFrame {
+public class SpecLineChart extends JFrame implements ActionListener{
 
     final int FFTNo = 1024;
     XYSeries series1;
     Main main;
+    JButton jb1, jb2, jb3, jb4, jb5, jb6, jb7, jb8, jb9;
     // final ChartPanel chartPanel;
     public static JTextField jtf1; //類別输入框
 
@@ -55,36 +62,46 @@ public class SpecLineChart extends JFrame {
         h1Pan.add(main.ioPan);
         JPanel q2Pan = new JPanel();
         q2Pan.setLayout(new GridLayout(2, 5, 5, 5));
-        JButton jb1 = new JButton("開始錄音");
+        jb1 = new JButton("開始錄音");
         jb1.setFont(new Font("Serif", Font.BOLD, 40));
+        jb1.addActionListener(this);
         q2Pan.add(jb1);
-        JButton jb2 = new JButton("停止錄音");
+        jb2 = new JButton("停止錄音");
         jb2.setFont(new Font("Serif", Font.BOLD, 40));
+        jb2.addActionListener(this);
         q2Pan.add(jb2);
-        JButton jb3 = new JButton("儲存樣本");
+        jb3 = new JButton("儲存樣本");
         jb3.setFont(new Font("Serif", Font.BOLD, 40));
+        jb3.addActionListener(this);
         q2Pan.add(jb3);
-        JButton jb4 = new JButton("進行訓練");
+        jb4 = new JButton("進行訓練");
         jb4.setFont(new Font("Serif", Font.BOLD, 40));
+        jb4.addActionListener(this);
         q2Pan.add(jb4);
-        JButton jb9 = new JButton("進行辨識");
+        jb5 = new JButton("加入類別");
+        jb5.setFont(new Font("Serif", Font.BOLD, 40));        
+        jb5.addActionListener(this);
+        q2Pan.add(jb5);
+        jb6 = new JButton("清空樣本");
+        jb6.setFont(new Font("Serif", Font.BOLD, 40));
+        jb2.addActionListener(this);
+        q2Pan.add(jb6);
+        jb7= new JButton("載辨識檔");
+        jb7.setFont(new Font("Serif", Font.BOLD, 40));
+        jb7.addActionListener(this);
+        q2Pan.add(jb7);
+        jb8 = new JButton("存辨識檔");
+        jb8.setFont(new Font("Serif", Font.BOLD, 40));
+        jb8.addActionListener(this);
+        q2Pan.add(jb8);
+        jb9 = new JButton("進行辨識");
         jb9.setFont(new Font("Serif", Font.BOLD, 40));
+        jb9.addActionListener(this);
         q2Pan.add(jb9);
         jtf1 = new JTextField("");//類別輸入框
         jtf1.setFont(new Font("Serif", Font.BOLD, 40));
         q2Pan.add(jtf1);
-        JButton jb5 = new JButton("加入類別");
-        jb5.setFont(new Font("Serif", Font.BOLD, 40));
-        q2Pan.add(jb5);
-        JButton jb6 = new JButton("清空樣本");
-        jb6.setFont(new Font("Serif", Font.BOLD, 40));
-        q2Pan.add(jb6);
-        JButton jb7= new JButton("載辨識檔");
-        jb7.setFont(new Font("Serif", Font.BOLD, 40));
-        q2Pan.add(jb7);
-        JButton jb8 = new JButton("存辨識檔");
-        jb8.setFont(new Font("Serif", Font.BOLD, 40));
-        q2Pan.add(jb8);
+        
 //        q2Pan.add(main.levName);
 //        q2Pan.add(main.arrowPan);
         h1Pan.add(q2Pan);
@@ -200,4 +217,31 @@ public class SpecLineChart extends JFrame {
         demo.setVisible(true);
 
     }
+	boolean flag = false;
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		BufferedWriter buw;
+		String file = "D:\\project\\Long-term-care-hospitalized\\test.txt";
+		if(e.getSource()==jb1) {
+			JOptionPane.showMessageDialog(this,"開始錄音");
+			flag = true;
+			main.tFrame.panel.initPeak();
+			
+			
+		}
+		if(e.getSource()==jb2 && flag == true) {
+			try {
+				buw = new BufferedWriter(new FileWriter(file));
+				String st = main.tFrame.panel.getPeak();
+				buw.write(st);
+				buw.close();
+				JOptionPane.showMessageDialog(this,"將"+st+"寫入"+file+"\r\n","寫入完成", JOptionPane.INFORMATION_MESSAGE);
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+		
+	}
 }

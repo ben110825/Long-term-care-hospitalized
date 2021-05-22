@@ -12,7 +12,7 @@ public class PeakPanel extends JPanel{
 	static final int SCREEN_WIDTH = 1024;
 	static final int SCREEN_HEIGHT = 500;
 	static final int ARRAYLIST_LENGTH = 5;
-	ArrayList<ArrayList>peak = new ArrayList();
+	ArrayList<ArrayList> peak = new ArrayList();
 	int y = 0;
 	int count = 0;
 	public PeakPanel(Main main_) {
@@ -36,7 +36,6 @@ public class PeakPanel extends JPanel{
 		y = 0;
 		for(int i=0;i<peak.size();i++) {
 			if(y > SCREEN_HEIGHT) {	
-				System.out.println("clear");
 				peak.clear();
 				break;
 			}
@@ -52,6 +51,12 @@ public class PeakPanel extends JPanel{
 	public void updatePanel(ArrayList arraylist) {
 		peak.add(arraylist);
 		repaint();
+	}
+	public String getPeak() {
+		return peak.toString();
+	}
+	public void initPeak() {
+		peak.clear();
 	}
 	
 }

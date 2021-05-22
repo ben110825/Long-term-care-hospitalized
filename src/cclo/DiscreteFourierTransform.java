@@ -709,14 +709,13 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 			}
 		}
 		peakCount++;
-		System.out.println(peakCount);
-		if(peakCount > 300) {
-			//System.out.println(fivePeak);
+		
+		if(peakCount > 100) { 					//測試環境音
 			pMain.tFrame.panel.updatePanel(fivePeak);
 		}
-
-
-		
+		else {
+			System.out.println("測試環境音中...");
+		}
 	}
 
 
