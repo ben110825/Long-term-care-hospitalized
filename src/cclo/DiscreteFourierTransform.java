@@ -747,12 +747,13 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 	{
 		temp = new PeakFeature();	
 	}
-	public void stoppeakRecord(PeakFeature temp)
+	public void stoppeakRecord(PeakFeature temp) 
 	{
 		String file = "/Users/mamingzheng/Documents/Long-term-care-hospitalized/test.txt";
 		try {
 			BufferedWriter buw = new BufferedWriter(new FileWriter(file));
-			String st = temp.toString();
+			String st = temp.peak.toString();
+			System.out.println(st);
 			buw.write(st);
 			buw.close();
 			
