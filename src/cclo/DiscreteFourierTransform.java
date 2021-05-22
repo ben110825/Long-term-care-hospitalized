@@ -665,10 +665,11 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 //        if (voiceAvg > shortVoiceAvg + 0.5) {
 //            findPeak(voice);
 //        }
-		if (voiceAvg / shortVoiceAvg > 1.2) {
+		if (voiceAvg / shortVoiceAvg > 1.1) {
 			findPeak(voice);
 		}
 	}
+	int peakCount = 0;
 	public void findPeak(double voice[]) {
 		ArrayList<Integer> fivePeak = new ArrayList();
 		for (int i = 0; i < FFTNo - 5; i++) {
@@ -707,8 +708,13 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 
 			}
 		}
-		System.out.println(fivePeak);
-		pMain.tFrame.panel.updatePanel(fivePeak);
+		peakCount++;
+		System.out.println(peakCount);
+		if(peakCount > 300) {
+			//System.out.println(fivePeak);
+			pMain.tFrame.panel.updatePanel(fivePeak);
+		}
+
 
 		
 	}

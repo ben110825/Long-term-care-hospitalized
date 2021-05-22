@@ -34,24 +34,6 @@ public class DemoFrame extends JFrame {
 	DemoFrame(Main main_) {
 		main = main_;
 		
-		panelwhiledraw();
-		
-		
-		
-		
-		
-		
-	}
-	/*public void someButtonActionPerformed( e) { //This is not working
-
-	    this.remove(panel);
-	    panel = new PeakPanel();
-	    this.add(panel);
-	    panel.revalidate();
-	    panel.repaint();
-	}*/
-	public void panelwhiledraw()
-	{
 		panel = new PeakPanel(main);
 		this.add(panel);
 		this.setTitle("Peak Panel");
@@ -59,9 +41,7 @@ public class DemoFrame extends JFrame {
 		this.setResizable(false);
 		this.pack();
 		this.setVisible(true);
-		this.setLocationRelativeTo(null);
-		
-		
+		this.setLocationRelativeTo(null);	
 	}
 
 	
