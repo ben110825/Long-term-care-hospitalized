@@ -11,7 +11,9 @@ import java.awt.event.ComponentEvent;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.swing.*;
 
@@ -39,7 +41,7 @@ public class SpecLineChart extends JFrame implements ActionListener{
     final int FFTNo = 1024;
     XYSeries series1;
     Main main;
-    JButton jb1, jb2, jb3, jb4, jb5, jb6, jb7, jb8, jb9;
+    JButton startRecordingButton, stopRecordingButton, jb3, jb4, jb5, jb6, jb7, jb8, jb9;
     // final ChartPanel chartPanel;
     public static JTextField jtf1; //類別输入框
 
@@ -63,14 +65,14 @@ public class SpecLineChart extends JFrame implements ActionListener{
         h1Pan.add(main.ioPan);
         JPanel q2Pan = new JPanel();
         q2Pan.setLayout(new GridLayout(2, 5, 5, 5));
-        jb1 = new JButton("開始錄音");
-        jb1.setFont(new Font("Serif", Font.BOLD, 40));
-        jb1.addActionListener(this);
-        q2Pan.add(jb1);
-        jb2 = new JButton("停止錄音");
-        jb2.setFont(new Font("Serif", Font.BOLD, 40));
-        jb2.addActionListener(this);
-        q2Pan.add(jb2);
+        startRecordingButton = new JButton("開始錄音");
+        startRecordingButton.setFont(new Font("Serif", Font.BOLD, 40));
+        startRecordingButton.addActionListener(this);
+        q2Pan.add(startRecordingButton);
+        stopRecordingButton = new JButton("停止錄音");
+        stopRecordingButton.setFont(new Font("Serif", Font.BOLD, 40));
+        stopRecordingButton.addActionListener(this);
+        q2Pan.add(stopRecordingButton);
         jb3 = new JButton("儲存樣本");
         jb3.setFont(new Font("Serif", Font.BOLD, 40));
         jb3.addActionListener(this);
@@ -85,7 +87,7 @@ public class SpecLineChart extends JFrame implements ActionListener{
         q2Pan.add(jb5);
         jb6 = new JButton("清空樣本");
         jb6.setFont(new Font("Serif", Font.BOLD, 40));
-        jb2.addActionListener(this);
+        jb6.addActionListener(this);
         q2Pan.add(jb6);
         jb7= new JButton("載辨識檔");
         jb7.setFont(new Font("Serif", Font.BOLD, 40));
@@ -218,19 +220,39 @@ public class SpecLineChart extends JFrame implements ActionListener{
         demo.setVisible(true);
 
     }
-	boolean flag2 = true;
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		
-		if(e.getSource() == jb1) {	
-			JOptionPane.showMessageDialog(this,"開始錄音");
-			main.dff.setRecordFlag(true);			
-		}else if(e.getSource() ==jb2)
+		if(e.getSource() == startRecordingButton) {	
+			if(main.dff.getRecordFlag()) {
+				JOptionPane.showMessageDialog(this,"錄音中");
+			}
+			else {
+				Date date = new Date();
+		        SimpleDateFormat myFmt=new SimpleDateFormat("yyyy_MM_dd HH_mm_ss");
+		        main.dff.setStoredFileName(myFmt.format(date));
+				JOptionPane.showMessageDialog(this,"開始錄音");
+				main.dff.setRecordFlag(true);			
+			}
+			
+		}else if(e.getSource() ==stopRecordingButton)
 		{
-			main.dff.setRecordFlag(false);
-			JOptionPane.showMessageDialog(this,"停止錄音");
+			if(main.dff.getRecordFlag()) {
+				main.dff.setRecordFlag(false);
+				JOptionPane.showMessageDialog(this,"存至:"+main.dff.getStoredFilePath()+main.dff.getStoredFileName());
+			}
+			else {
+				JOptionPane.showMessageDialog(this,"未錄音");
+			}
 		}
-		
+		if(e.getSource() == jb7) {
+			JFileChooser chooser = new JFileChooser();
+			int returnValue = chooser.showOpenDialog(null); 
+			String st = chooser.getSelectedFile().getAbsolutePath();
+			JOptionPane.showMessageDialog(this,"讀取至:"+st);
+			main.dff.setLoadedFile(st);
+			main.dff.loadFile();
+		}
 		
 	}
 

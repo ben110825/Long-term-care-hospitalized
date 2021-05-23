@@ -20,7 +20,11 @@ import edu.cmu.sphinx.util.props.*;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -101,7 +105,7 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 	private Complex[] to;
 	private Complex weightFftTimesFrom2;
 	private Complex tempComplex;
-	
+
 	public DiscreteFourierTransform(int numberFftPoints, boolean invert) {
 
 		initLogger();
@@ -668,9 +672,10 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 			findPeak(voice);
 		}
 	}
+
 	int peakCount = 0;
 	ArrayList<Integer> fivePeak;
-	
+
 	protected boolean isRecordFlag() {
 		return recordFlag;
 	}
@@ -678,12 +683,31 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 	protected void setRecordFlag(boolean recordFlag) {
 		this.recordFlag = recordFlag;
 	}
+
 	PeakFeature temp;
-	int countRecord =0;
+	int countRecord = 0;
 	boolean recordFlag = false;
+	final String storedFilePath = "D:\\345\\Long-term-care-hospitalized\\Unidentified\\";    			//錄音用路徑檔
+	String storedFileName = "";
+	String loadedFile = "";    			//讀取用路徑檔
+	public String getStoredFilePath() {
+		return storedFilePath;
+	}
+	public void setStoredFileName(String file) {
+		this.storedFileName = file+".txt";
+	}
+	public String getStoredFileName() {
+		return storedFileName;
+	}
+	public void setLoadedFile(String file) {
+		this.loadedFile = file;
+	}
+	public String getLoadedFile() {
+		return loadedFile;
+	}
 	public void findPeak(double voice[]) {
 		fivePeak = new ArrayList();
-		System.out.println(recordFlag);
+		//System.out.println(recordFlag);
 		for (int i = 0; i < FFTNo - 5; i++) {
 			// System.out.println(voice[i]);
 			int leftBoundary, rightBoundary, mid;
@@ -720,49 +744,70 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 			}
 		}
 		peakCount++;
-		
-		if(peakCount > 100) { 					//測試環境音
+
+		if (peakCount > 0) { // 測試環境音
 			pMain.tFrame.panel.updatePanel(fivePeak);
+		} else {
+			System.out.println("測試環境音中...");
 		}
-		else {
-			System.out.println("測試環境音中..."+countRecord);
-		}
-		if(recordFlag == true){
-			System.out.println("錄音區塊"+ countRecord);
-			if(countRecord == 0)startpeakRecord();
+		if (recordFlag == true) {
+			System.out.println("錄音區塊" + countRecord);
+			if (countRecord == 0)
+				startpeakRecord();
 			countRecord++;
 			temp.recordingFeature(fivePeak);
 		}
-		if(recordFlag == false & countRecord > 0)
-		{
+		if (recordFlag == false & countRecord > 0) {
 			System.out.println("錄音停止區塊");
 			stoppeakRecord(temp);
 			countRecord = 0;
 		}
 	}
+	public boolean getRecordFlag() {
+		return recordFlag;
+	}
 	public ArrayList<Integer> getFivePeak() {
 		return fivePeak;
 	}
-	public void startpeakRecord()
-	{
-		temp = new PeakFeature();	
+	public void createNewStroedFile() {
+	    try {
+	    	//System.out.println(storedFilePath+storedFileName);
+		    File dir_file = new File(storedFilePath+storedFileName);   
+			dir_file.createNewFile();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}    
 	}
-	public void stoppeakRecord(PeakFeature temp) 
-	{
-		String file = "/Users/mamingzheng/Documents/Long-term-care-hospitalized/test.txt";
+	public void startpeakRecord()  {
+		temp = new PeakFeature();
+	}
+	public void stoppeakRecord(PeakFeature temp) {
+
 		try {
-			BufferedWriter buw = new BufferedWriter(new FileWriter(file));
+			createNewStroedFile();
+			System.out.println();
+			BufferedWriter buw = new BufferedWriter(new FileWriter(storedFilePath+storedFileName));
 			String st = temp.peak.toString();
 			System.out.println(st);
 			buw.write(st);
 			buw.close();
-			
+			System.out.println("儲存完畢");
+
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 	}
-
+	public void loadFile() {
+		try {
+			BufferedReader bur = new BufferedReader(new FileReader(loadedFile));
+			String st = bur.readLine();
+			System.out.println(st);
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
+	}
 	public void setMagThresh(double magThresh_) {
 		SPEC_RATIO = magThresh_;
 		// System.out.println("\nMag_Thresh: " + SPEC_RATIO);
