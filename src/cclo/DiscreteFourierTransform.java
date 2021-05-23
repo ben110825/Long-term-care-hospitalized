@@ -687,7 +687,7 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 	PeakFeature temp;
 	int countRecord = 0;
 	boolean recordFlag = false;
-	final String storedFilePath = "D:\\345\\Long-term-care-hospitalized\\Unidentified\\";    			//錄音用路徑檔
+	final String storedFilePath = "D:\\project\\Long-term-care-hospitalized\\Unidentified\\";    			//錄音用路徑檔
 	String storedFileName = "";
 	String loadedFile = "";    			//讀取用路徑檔
 	public String getStoredFilePath() {
