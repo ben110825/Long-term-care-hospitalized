@@ -669,8 +669,13 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 //            findPeak(voice);
 //        }
 		if (voiceAvg / shortVoiceAvg > 1.1) {
-			findPeak(voice);
+			findPeak(voice, true);
 		}
+		else{
+			findPeak(voice, false);
+
+		}
+		
 	}
 
 	int peakCount = 0;
@@ -705,71 +710,105 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 	public String getLoadedFile() {
 		return loadedFile;
 	}
-	public void findPeak(double voice[]) {
-		fivePeak = new ArrayList();
-		//System.out.println(recordFlag);
-		for (int i = 0; i < FFTNo - 5; i++) {
-			// System.out.println(voice[i]);
-			int leftBoundary, rightBoundary, mid;
-			leftBoundary = i;
-			int max = leftBoundary;
-			rightBoundary = leftBoundary + 5;
-			mid = (leftBoundary + rightBoundary) / 2;
-			for (int j = leftBoundary; j < rightBoundary; j++) {
-				// System.out.println("MAX ="+voice[max] +" "+"j = "+voice[j]);
-				if (voice[j] > voice[max]) {
-					max = j;
-				}
-			}
-			if (voice[max] == voice[mid]) {
-				// System.out.println(mid);
-				if (fivePeak.size() < 5) {
-					fivePeak.add(mid);
-				} else {
-					int small = 0;
-					for (int j = 0; j < fivePeak.size(); j++) {
-						// System.out.print(fivePeak.get(j)+" ");
-						if (voice[(int) fivePeak.get(small)] > voice[(int) fivePeak.get(j)]) {
-							small = j;
-						}
-					}
-					// System.out.println();
-					// System.out.println("small "+small+" ");
-					if (voice[(int) fivePeak.get(small)] < voice[max]) {
-						fivePeak.set(small, max);
-					}
-
-				}
-
-			}
-		}
-		peakCount++;
-
-		if (peakCount > 0) { // 測試環境音
-			pMain.tFrame.panel.updatePanel(fivePeak);
-		} else {
-			System.out.println("測試環境音中...");
-		}
-		if (recordFlag == true) {
-			System.out.println("錄音區塊" + countRecord);
-			if (countRecord == 0)
-				startpeakRecord();
-			countRecord++;
-			temp.recordingFeature(fivePeak);
-		}
-		if (recordFlag == false & countRecord > 0) {
-			System.out.println("錄音停止區塊");
-			stoppeakRecord(temp);
-			countRecord = 0;
-		}
-	}
 	public boolean getRecordFlag() {
 		return recordFlag;
 	}
 	public ArrayList<Integer> getFivePeak() {
 		return fivePeak;
 	}
-	public void createNewStroedFile() {
+	public void findPeak(double voice[],boolean flag) {	//找出5個特徵 若沒聲音則為0
+		fivePeak = new ArrayList();
+		//System.out.println(recordFlag);
+		if(flag) {
+			for (int i = 0; i < FFTNo - 5; i++) {
+				// System.out.println(voice[i]);
+				int leftBoundary, rightBoundary, mid;
+				leftBoundary = i;
+				int max = leftBoundary;
+				rightBoundary = leftBoundary + 5;
+				mid = (leftBoundary + rightBoundary) / 2;
+				for (int j = leftBoundary; j < rightBoundary; j++) {
+					// System.out.println("MAX ="+voice[max] +" "+"j = "+voice[j]);
+					if (voice[j] > voice[max]) {
+						max = j;
+					}
+				}
+				if (voice[max] == voice[mid]) {
+					// System.out.println(mid);
+					if (fivePeak.size() < 5) {
+						fivePeak.add(mid);
+					} else {
+						int small = 0;
+						for (int j = 0; j < fivePeak.size(); j++) {
+							// System.out.print(fivePeak.get(j)+" ");
+							if (voice[(int) fivePeak.get(small)] > voice[(int) fivePeak.get(j)]) {
+								small = j;
+							}
+						}
+						if (voice[(int) fivePeak.get(small)] < voice[max]) {
+							fivePeak.set(small, max);
+						}
+
+					}
+
+				}
+				
+				
+			}
+		}
+		else {
+			for(int i=0;i<5;i++) {
+				fivePeak.add(0);			
+			}
+		}
+		testAmbientSound();
+		if (recordFlag == true) {
+			bubbleSort(fivePeak, voice);
+			System.out.println("錄音區塊" + countRecord);
+			if (countRecord == 0) {
+				startpeakRecord();
+			}
+			countRecord++;
+			temp.recordingFeature(fivePeak);
+		}
+		if (recordFlag == false && countRecord > 0) {
+			System.out.println("錄音停止區塊");
+			stoppeakRecord(temp);
+			countRecord = 0;
+		}
+	}
+	public void testAmbientSound() {	// 測試環境音
+		peakCount++;
+		if (peakCount > 100) { 
+			if(peakCount == 101) {
+				System.out.println("環境音測試完畢");
+			}
+			pMain.tFrame.panel.updatePanel(fivePeak);
+		} else {
+			System.out.println("測試環境音中...");
+		}
+	}
+	public void bubbleSort(ArrayList al, double voice[]) {		//排序al
+		int length = al.size();
+		int temp;
+		boolean isSorted;
+		
+		for(int i=0;i<length; i++){
+			isSorted = true;
+			for(int j=0;j<length-1; j++) {
+				if(voice[(int)al.get(j)] < voice[(int)al.get(j+1)]) {			//若後大於前則互換
+					temp = (int)al.get(j);
+					al.set(j, al.get(j+1));
+					al.set(j+1, temp);
+					isSorted = false;
+				}
+			}
+			if(isSorted)
+				break;
+		}
+	}	
+
+	public void createNewStroedFile() {		//建立新檔案
 	    try {
 	    	//System.out.println(storedFilePath+storedFileName);
 		    File dir_file = new File(storedFilePath+storedFileName);   
@@ -783,10 +822,8 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 		temp = new PeakFeature();
 	}
 	public void stoppeakRecord(PeakFeature temp) {
-
 		try {
 			createNewStroedFile();
-			System.out.println();
 			BufferedWriter buw = new BufferedWriter(new FileWriter(storedFilePath+storedFileName));
 			String st = temp.peak.toString();
 			System.out.println(st);
@@ -808,6 +845,7 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 			e.printStackTrace();
 		}
 	}
+	
 	public void setMagThresh(double magThresh_) {
 		SPEC_RATIO = magThresh_;
 		// System.out.println("\nMag_Thresh: " + SPEC_RATIO);
