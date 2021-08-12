@@ -657,18 +657,15 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 		}
 		double sum = 0;
 		for (int i = 0; i < FFTNo; i++) {
-			shortVoice[i] = shortVoice[i] * 0.99 + Math.log10(voice[i]) * 0.01;
+			shortVoice[i] = shortVoice[i] * 0.995 + Math.log10(voice[i]) * 0.005;
 			sum += shortVoice[i];
 			voiceAvg += Math.log10(voice[i]);
 		}
 		shortVoiceAvg = sum / FFTNo;
 		voiceAvg /= FFTNo;
-//      System.out.println("short  "+shortVoiceAvg+" voice "+voiceAvg);
-		// System.out.println("voice avg "+voiceAvg);
-//        if (voiceAvg > shortVoiceAvg + 0.5) {
-//            findPeak(voice);
-//        }
-		if (voiceAvg / shortVoiceAvg > 1.1) {
+	//	System.out.println("short平均 "+shortVoiceAvg);
+	//	System.out.println("平均 "+voiceAvg);
+		if (voiceAvg / shortVoiceAvg > 1.05) {
 			findPeak(voice, true);
 		}
 		else{
@@ -692,6 +689,9 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 	PeakFeature temp;
 	int countRecord = 0;
 	boolean recordFlag = false;
+	boolean hasFirstVoice = false;
+	boolean hasAmbientSound = true;
+	int countAmbientSound = 0;
 	final String storedFilePath = "D:\\project\\Long-term-care-hospitalized\\Unidentified\\";    			//錄音用路徑檔
 	String storedFileName = "";
 	String loadedFile = "";    			//讀取用路徑檔
@@ -762,31 +762,46 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 			}
 		}
 		testAmbientSound();
-		if (recordFlag == true) {
-			bubbleSort(fivePeak, voice);
-			System.out.println("錄音區塊" + countRecord);
-			if (countRecord == 0) {
-				startpeakRecord();
+	
+		if (recordFlag == true) {		
+			if (voiceAvg / shortVoiceAvg > 1.1 || hasFirstVoice) {		//有聲音才正式開始記錄
+				hasFirstVoice = true;
+				bubbleSort(fivePeak, voice);
+				System.out.println("錄音區塊" + countRecord);
+				if(countRecord == 0)
+					startpeakRecord();
+				countRecord++;
+				temp.recordingFeature(fivePeak);
 			}
-			countRecord++;
-			temp.recordingFeature(fivePeak);
+			
 		}
 		if (recordFlag == false && countRecord > 0) {
 			System.out.println("錄音停止區塊");
 			stoppeakRecord(temp);
 			countRecord = 0;
+			hasFirstVoice = false;
 		}
 	}
-	public void testAmbientSound() {	// 測試環境音
-		peakCount++;
-		if (peakCount > 100) { 
-			if(peakCount == 101) {
-				System.out.println("環境音測試完畢");
-			}
-			pMain.tFrame.panel.updatePanel(fivePeak);
-		} else {
-			System.out.println("測試環境音中...");
+
+	public void testAmbientSound() {	// 按下按鈕後 測試環境音
+		ArrayList<Integer> tempAl = new ArrayList();
+		for(int i=0;i<5;i++) {
+			tempAl.add(0);
 		}
+		if(tempAl.equals(getFivePeak())) {
+			hasAmbientSound = false;
+			countAmbientSound++;
+		}
+
+		if (hasAmbientSound || countAmbientSound<100) { 
+			System.out.println("測試環境音中...");
+		} else {
+			if(countAmbientSound == 105)
+				System.out.println("測試完畢");
+			pMain.tFrame.panel.updatePanel(fivePeak);
+
+		}
+			
 	}
 	public void bubbleSort(ArrayList al, double voice[]) {		//排序al
 		int length = al.size();
