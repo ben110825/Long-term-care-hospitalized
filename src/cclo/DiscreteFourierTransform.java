@@ -692,7 +692,7 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 	boolean hasFirstVoice = false;
 	boolean hasAmbientSound = true;
 	int countAmbientSound = 0;
-	final String storedFilePath = "./";    			//錄音用路徑檔
+	final String storedFilePath = "D:\\project\\Long-term-care-hospitalized\\Unidentified\\";    			//錄音用路徑檔
 	String storedFileName = "";
 	String loadedFile = "";    			//讀取用路徑檔
 	public String getStoredFilePath() {
@@ -825,7 +825,7 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 
 	public void createNewStroedFile() {		//建立新檔案
 	    try {
-	    	System.out.println(storedFilePath+storedFileName);
+	    	//System.out.println(storedFilePath+storedFileName);
 		    File dir_file = new File(storedFilePath+storedFileName);   
 			dir_file.createNewFile();
 		} catch (IOException e) {

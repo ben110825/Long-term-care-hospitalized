@@ -232,16 +232,14 @@ public class SpecLineChart extends JFrame implements ActionListener{
 		        SimpleDateFormat myFmt=new SimpleDateFormat("yyyy_MM_dd HH_mm_ss");
 		        main.dff.setStoredFileName(myFmt.format(date));
 				JOptionPane.showMessageDialog(this,"開始錄音");
-				main.dff.setRecordFlag(true);
-				main.dff.startpeakRecord();
-				}
+				main.dff.setRecordFlag(true);			
+			}
 			
 		}else if(e.getSource() ==stopRecordingButton)
 		{
 			if(main.dff.getRecordFlag()) {
 				main.dff.setRecordFlag(false);
 				JOptionPane.showMessageDialog(this,"存至:"+main.dff.getStoredFilePath()+main.dff.getStoredFileName());
-				main.dff.stoppeakRecord(main.dff.temp);
 			}
 			else {
 				JOptionPane.showMessageDialog(this,"未錄音");
