@@ -27,11 +27,14 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Reader;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import javax.swing.JOptionPane;
 import javax.swing.Timer;
+
+import com.google.gson.Gson;
 
 /**
  * Computes the Discrete Fourier Transform (FT) of an input sequence, using Fast
@@ -677,56 +680,25 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 
 	int peakCount = 0;
 	ArrayList<Integer> fivePeak;
-
-	protected boolean isRecordFlag() {
-		return recordFlag;
-	}
-
-	protected void setRecordFlag(boolean recordFlag) {
-		this.recordFlag = recordFlag;
-	}
-
 	PeakFeature temp;
 	int countRecord = 0;
 	boolean recordFlag = false;
 	boolean hasFirstVoice = false;
 	boolean hasAmbientSound = true;
 	int countAmbientSound = 0;
-	final String storedFilePath = "D:\\project\\Long-term-care-hospitalized\\Unidentified\\";    			//錄音用路徑檔
+	final String storedFilePath = "./sound_source/";    			//錄音用路徑檔
 	String storedFileName = "";
-	String loadedFile = "";    			//讀取用路徑檔
-	public String getStoredFilePath() {
-		return storedFilePath;
-	}
-	public void setStoredFileName(String file) {
-		this.storedFileName = file+".txt";
-	}
-	public String getStoredFileName() {
-		return storedFileName;
-	}
-	public void setLoadedFile(String file) {
-		this.loadedFile = file;
-	}
-	public String getLoadedFile() {
-		return loadedFile;
-	}
-	public boolean getRecordFlag() {
-		return recordFlag;
-	}
-	public ArrayList<Integer> getFivePeak() {
-		return fivePeak;
-	}
+	String loadedFile = "./sound_source/";    			//讀取用路徑檔
 	public void findPeak(double voice[],boolean flag) {	//找出5個特徵 若沒聲音則為0
-		fivePeak = new ArrayList();
+		fivePeak = new ArrayList<Integer>();
 		//System.out.println(recordFlag);
 		if(flag) {
 			for (int i = 0; i < FFTNo - 5; i++) {
 				// System.out.println(voice[i]);
-				int leftBoundary, rightBoundary, mid;
-				leftBoundary = i;
+				int leftBoundary = i;
+				int rightBoundary = leftBoundary +5;
+				int mid = (leftBoundary + rightBoundary) / 2;
 				int max = leftBoundary;
-				rightBoundary = leftBoundary + 5;
-				mid = (leftBoundary + rightBoundary) / 2;
 				for (int j = leftBoundary; j < rightBoundary; j++) {
 					// System.out.println("MAX ="+voice[max] +" "+"j = "+voice[j]);
 					if (voice[j] > voice[max]) {
@@ -748,12 +720,8 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 						if (voice[(int) fivePeak.get(small)] < voice[max]) {
 							fivePeak.set(small, max);
 						}
-
 					}
-
-				}
-				
-				
+				}			
 			}
 		}
 		else {
@@ -761,8 +729,7 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 				fivePeak.add(0);			
 			}
 		}
-		testAmbientSound();
-	
+		testAmbientSound();	
 		if (recordFlag == true) {		
 			if (voiceAvg / shortVoiceAvg > 1.1 || hasFirstVoice) {		//有聲音才正式開始記錄
 				hasFirstVoice = true;
@@ -777,14 +744,14 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 		}
 		if (recordFlag == false && countRecord > 0) {
 			System.out.println("錄音停止區塊");
-			stoppeakRecord(temp);
+			stoppeakRecord();
 			countRecord = 0;
 			hasFirstVoice = false;
 		}
 	}
 
 	public void testAmbientSound() {	// 按下按鈕後 測試環境音
-		ArrayList<Integer> tempAl = new ArrayList();
+		ArrayList<Integer> tempAl = new ArrayList<Integer>();
 		for(int i=0;i<5;i++) {
 			tempAl.add(0);
 		}
@@ -803,7 +770,7 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 		}
 			
 	}
-	public void bubbleSort(ArrayList al, double voice[]) {		//排序al
+	public void bubbleSort(ArrayList<Integer> al, double voice[]) {		//排序al
 		int length = al.size();
 		int temp;
 		boolean isSorted;
@@ -822,7 +789,6 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 				break;
 		}
 	}	
-
 	public void createNewStroedFile() {		//建立新檔案
 	    try {
 	    	//System.out.println(storedFilePath+storedFileName);
@@ -836,11 +802,11 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 	public void startpeakRecord()  {
 		temp = new PeakFeature();
 	}
-	public void stoppeakRecord(PeakFeature temp) {
+	public void stoppeakRecord() {
 		try {
 			createNewStroedFile();
 			BufferedWriter buw = new BufferedWriter(new FileWriter(storedFilePath+storedFileName));
-			String st = temp.peak.toString();
+			String st = temp.gsonout();
 			System.out.println(st);
 			buw.write(st);
 			buw.close();
@@ -852,21 +818,59 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 		}
 	}
 	public void loadFile() {
-		try {
+		Gson gson = new Gson();
+
+        try (Reader reader = new FileReader(loadedFile)) {
+
+            // Convert JSON File to Java Object
+            PeakFeature temp = gson.fromJson(reader, PeakFeature.class);
+            
+            // print staff 
+            System.out.println(temp.toString());
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+		/*try {
 			BufferedReader bur = new BufferedReader(new FileReader(loadedFile));
-			String st = bur.readLine();
-			System.out.println(st);
+			PeakFeature review = PeakFeature,gsonin(loadedFile);
+			//PeakFeature st = bur.readLine();
+			System.out.println();
 		} catch(IOException e) {
 			e.printStackTrace();
-		}
+		}*/
 	}
-	
 	public void setMagThresh(double magThresh_) {
 		SPEC_RATIO = magThresh_;
-		// System.out.println("\nMag_Thresh: " + SPEC_RATIO);
+		System.out.println("\nMag_Thresh: " + SPEC_RATIO);
 	}
-
 	public void setAED(Main aed_) {
 		pMain = aed_;
 	}
+	public String getStoredFilePath() {
+		return storedFilePath;
+	}
+	public void setStoredFileName(String file) {
+		this.storedFileName = file+".json";
+	}
+	public String getStoredFileName() {
+		return storedFileName;
+	}
+	public void setLoadedFile(String file) {
+		this.loadedFile = file;
+	}
+	public String getLoadedFile() {
+		return loadedFile;
+	}
+	public boolean getRecordFlag() {
+		return recordFlag;
+	}
+	public ArrayList<Integer> getFivePeak() {
+
+		return fivePeak;
+	}
+	protected void setRecordFlag(boolean recordFlag) {
+		this.recordFlag = recordFlag;
+	}
 }
+

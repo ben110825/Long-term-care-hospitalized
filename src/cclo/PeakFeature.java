@@ -1,7 +1,10 @@
 package cclo;
 
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+
+import com.google.gson.Gson;
 
 public class PeakFeature {
 
@@ -68,6 +71,12 @@ public class PeakFeature {
 	public void recordingFeature(ArrayList al) {
 		peak.add(al);
 	}
+	public String gsonout() {
+		Gson gson = new Gson();
+		String json = gson.toJson(this);
+		return json;	
+	}
+	
  
 
 }

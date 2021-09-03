@@ -41,7 +41,7 @@ public class SpecLineChart extends JFrame implements ActionListener{
     final int FFTNo = 1024;
     XYSeries series1;
     Main main;
-    JButton startRecordingButton, stopRecordingButton, jb3, jb4, jb5, jb6, jb7, jb8, jb9;
+    JButton startRecordingButton, stopRecordingButton, jb3, jb4, jb5, jb6, loadFileButton, jb8, jb9;
     // final ChartPanel chartPanel;
     public static JTextField jtf1; //類別输入框
 
@@ -89,10 +89,10 @@ public class SpecLineChart extends JFrame implements ActionListener{
         jb6.setFont(new Font("Serif", Font.BOLD, 40));
         jb6.addActionListener(this);
         q2Pan.add(jb6);
-        jb7= new JButton("載辨識檔");
-        jb7.setFont(new Font("Serif", Font.BOLD, 40));
-        jb7.addActionListener(this);
-        q2Pan.add(jb7);
+        loadFileButton= new JButton("載辨識檔");
+        loadFileButton.setFont(new Font("Serif", Font.BOLD, 40));
+        loadFileButton.addActionListener(this);
+        q2Pan.add(loadFileButton);
         jb8 = new JButton("存辨識檔");
         jb8.setFont(new Font("Serif", Font.BOLD, 40));
         jb8.addActionListener(this);
@@ -232,7 +232,8 @@ public class SpecLineChart extends JFrame implements ActionListener{
 		        SimpleDateFormat myFmt=new SimpleDateFormat("yyyy_MM_dd HH_mm_ss");
 		        main.dff.setStoredFileName(myFmt.format(date));
 				JOptionPane.showMessageDialog(this,"開始錄音");
-				main.dff.setRecordFlag(true);			
+				main.dff.setRecordFlag(true);	
+				main.dff.startpeakRecord();
 			}
 			
 		}else if(e.getSource() ==stopRecordingButton)
@@ -240,12 +241,13 @@ public class SpecLineChart extends JFrame implements ActionListener{
 			if(main.dff.getRecordFlag()) {
 				main.dff.setRecordFlag(false);
 				JOptionPane.showMessageDialog(this,"存至:"+main.dff.getStoredFilePath()+main.dff.getStoredFileName());
+				main.dff.stoppeakRecord();
 			}
 			else {
 				JOptionPane.showMessageDialog(this,"未錄音");
 			}
 		}
-		if(e.getSource() == jb7) {
+		if(e.getSource() == loadFileButton) {
 			JFileChooser chooser = new JFileChooser();
 			int returnValue = chooser.showOpenDialog(null); 
 			String st = chooser.getSelectedFile().getAbsolutePath();
