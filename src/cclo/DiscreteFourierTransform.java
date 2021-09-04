@@ -817,7 +817,7 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 			e1.printStackTrace();
 		}
 	}
-	public void loadFile() {
+	public PeakFeature loadFile() {
 		Gson gson = new Gson();
 
         try (Reader reader = new FileReader(loadedFile)) {
@@ -826,7 +826,8 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
             PeakFeature temp = gson.fromJson(reader, PeakFeature.class);
             
             // print staff 
-            System.out.println(temp.toString());
+            System.out.println(temp.getPeak());
+            
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -839,6 +840,7 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 		} catch(IOException e) {
 			e.printStackTrace();
 		}*/
+		return temp;
 	}
 	public void setMagThresh(double magThresh_) {
 		SPEC_RATIO = magThresh_;

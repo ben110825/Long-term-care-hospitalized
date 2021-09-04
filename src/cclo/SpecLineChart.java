@@ -39,16 +39,18 @@ import org.jfree.ui.RefineryUtilities;
 public class SpecLineChart extends JFrame implements ActionListener{
 
     final int FFTNo = 1024;
+	boolean hasLoadFile = false; //用於檢測有無讀檔
+	PeakFeature simpleFile;
+	PeakFeature identificationFile;
     XYSeries series1;
     Main main;
-    JButton startRecordingButton, stopRecordingButton, jb3, jb4, jb5, jb6, loadFileButton, jb8, jb9;
+    JButton startRecordingButton, stopRecordingButton, clearIdentificationFileButton, loadFileButton, compareButton;
     // final ChartPanel chartPanel;
     public static JTextField jtf1; //類別输入框
 
     public SpecLineChart(final String title, Main main_) {
         super(title);
         main = main_;
-
         final XYDataset dataset = createDataset();
         final JFreeChart chart = createChart(dataset);
         final ChartPanel chartPanel = new ChartPanel(chart);
@@ -73,34 +75,18 @@ public class SpecLineChart extends JFrame implements ActionListener{
         stopRecordingButton.setFont(new Font("Serif", Font.BOLD, 40));
         stopRecordingButton.addActionListener(this);
         q2Pan.add(stopRecordingButton);
-        jb3 = new JButton("儲存樣本");
-        jb3.setFont(new Font("Serif", Font.BOLD, 40));
-        jb3.addActionListener(this);
-        q2Pan.add(jb3);
-        jb4 = new JButton("進行訓練");
-        jb4.setFont(new Font("Serif", Font.BOLD, 40));
-        jb4.addActionListener(this);
-        q2Pan.add(jb4);
-        jb5 = new JButton("加入類別");
-        jb5.setFont(new Font("Serif", Font.BOLD, 40));        
-        jb5.addActionListener(this);
-        q2Pan.add(jb5);
-        jb6 = new JButton("清空樣本");
-        jb6.setFont(new Font("Serif", Font.BOLD, 40));
-        jb6.addActionListener(this);
-        q2Pan.add(jb6);
-        loadFileButton= new JButton("載辨識檔");
+        clearIdentificationFileButton = new JButton("清空辨識檔");
+        clearIdentificationFileButton.setFont(new Font("Serif", Font.BOLD, 40));
+        clearIdentificationFileButton.addActionListener(this);
+        q2Pan.add(clearIdentificationFileButton);
+        loadFileButton= new JButton("載樣本檔");
         loadFileButton.setFont(new Font("Serif", Font.BOLD, 40));
         loadFileButton.addActionListener(this);
         q2Pan.add(loadFileButton);
-        jb8 = new JButton("存辨識檔");
-        jb8.setFont(new Font("Serif", Font.BOLD, 40));
-        jb8.addActionListener(this);
-        q2Pan.add(jb8);
-        jb9 = new JButton("進行辨識");
-        jb9.setFont(new Font("Serif", Font.BOLD, 40));
-        jb9.addActionListener(this);
-        q2Pan.add(jb9);
+        compareButton = new JButton("進行辨識");
+        compareButton.setFont(new Font("Serif", Font.BOLD, 40));
+        compareButton.addActionListener(this);
+        q2Pan.add(compareButton);
         jtf1 = new JTextField("");//類別輸入框
         jtf1.setFont(new Font("Serif", Font.BOLD, 40));
         q2Pan.add(jtf1);
@@ -233,7 +219,7 @@ public class SpecLineChart extends JFrame implements ActionListener{
 		        main.dff.setStoredFileName(myFmt.format(date));
 				JOptionPane.showMessageDialog(this,"開始錄音");
 				main.dff.setRecordFlag(true);	
-				main.dff.startpeakRecord();
+			//	main.dff.startpeakRecord();
 			}
 			
 		}else if(e.getSource() ==stopRecordingButton)
@@ -241,21 +227,36 @@ public class SpecLineChart extends JFrame implements ActionListener{
 			if(main.dff.getRecordFlag()) {
 				main.dff.setRecordFlag(false);
 				JOptionPane.showMessageDialog(this,"存至:"+main.dff.getStoredFilePath()+main.dff.getStoredFileName());
-				main.dff.stoppeakRecord();
+				main.dff.setLoadedFile(main.dff.getStoredFilePath()+main.dff.getStoredFileName());
+				identificationFile = main.dff.loadFile();	//結束錄音時順便讀入此檔案
+				
+			//	main.dff.stoppeakRecord();
 			}
 			else {
 				JOptionPane.showMessageDialog(this,"未錄音");
 			}
 		}
-		if(e.getSource() == loadFileButton) {
+		else if(e.getSource() == loadFileButton) {	
 			JFileChooser chooser = new JFileChooser();
 			int returnValue = chooser.showOpenDialog(null); 
 			String st = chooser.getSelectedFile().getAbsolutePath();
 			JOptionPane.showMessageDialog(this,"讀取至:"+st);
 			main.dff.setLoadedFile(st);
-			main.dff.loadFile();
+			simpleFile = new PeakFeature();
+			simpleFile = main.dff.loadFile();		//讀入樣本檔
+			hasLoadFile = true;
 		}
-		
+		else if(e.getSource() == clearIdentificationFileButton) {
+			identificationFile = new PeakFeature();
+		}
+		else if(e.getSource() == compareButton && hasLoadFile && !identificationFile.isEmpty()) {	//比對未完成
+			System.out.println("Simple: "+simpleFile.getPeak());
+			System.out.println("Identification: "+identificationFile.getPeak());
+
+			identificationFile.analize(simpleFile);
+		}else {
+			JOptionPane.showMessageDialog(this,"尚未載入樣本檔案，無法比對");
+		}
 	}
 
 	
