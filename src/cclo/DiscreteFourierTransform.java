@@ -680,8 +680,8 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 
 	int peakCount = 0;
 	ArrayList<Integer> fivePeak;
-	PeakFeature temp;
-	int countRecord = 0;
+	PeakFeature temp = new PeakFeature();
+	//int countRecord = 0;
 	boolean recordFlag = false;
 	boolean hasFirstVoice = false;
 	boolean hasAmbientSound = true;
@@ -734,18 +734,15 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 			if (voiceAvg / shortVoiceAvg > 1.1 || hasFirstVoice) {		//有聲音才正式開始記錄
 				hasFirstVoice = true;
 				bubbleSort(fivePeak, voice);
-				System.out.println("錄音區塊" + countRecord);
-				if(countRecord == 0)
-					startpeakRecord();
-				countRecord++;
+				if(temp.getCountRecord() == 0)startpeakRecord();
+				temp.setCountRecord(temp.getCountRecord() + 1);
 				temp.recordingFeature(fivePeak);
-			}
-			
+				System.out.println("錄音區塊" + temp.getCountRecord());
+			}		
 		}
-		if (recordFlag == false && countRecord > 0) {
+		if (recordFlag == false && temp.getCountRecord() > 0) {
 			System.out.println("錄音停止區塊");
 			stoppeakRecord();
-			countRecord = 0;
 			hasFirstVoice = false;
 		}
 	}
@@ -789,26 +786,29 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 				break;
 		}
 	}	
-	public void createNewStroedFile() {		//建立新檔案
+	/*public void createNewStroedFile() {		//建立新檔案
 	    try {
 	    	//System.out.println(storedFilePath+storedFileName);
-		    File dir_file = new File(storedFilePath+storedFileName);   
+		    File dir_file = new File(storedFilePath+temp.getTime());   
 			dir_file.createNewFile();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}    
-	}
+	}*/
 	public void startpeakRecord()  {
 		temp = new PeakFeature();
+		Date date = new Date();
+        SimpleDateFormat myFmt=new SimpleDateFormat("yyyy_MM_dd HH_mm_ss");
+        temp.setTime(myFmt.format(date));
 	}
 	public void stoppeakRecord() {
 		try {
-			createNewStroedFile();
-			BufferedWriter buw = new BufferedWriter(new FileWriter(storedFilePath+storedFileName));
-			String st = temp.gsonout();
-			System.out.println(st);
-			buw.write(st);
+			File dir_file = new File(storedFilePath+temp.getTime()); 
+			dir_file.createNewFile();
+			BufferedWriter buw = new BufferedWriter(new FileWriter(storedFilePath+temp.getTime()));
+			//System.out.println(st);
+			buw.write(temp.gsonout());
 			buw.close();
 			System.out.println("儲存完畢");
 
@@ -819,14 +819,11 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 	}
 	public void loadFile() {
 		Gson gson = new Gson();
-
         try (Reader reader = new FileReader(loadedFile)) {
-
             // Convert JSON File to Java Object
-            PeakFeature temp = gson.fromJson(reader, PeakFeature.class);
-            
+            temp = gson.fromJson(reader, PeakFeature.class);   
             // print staff 
-            System.out.println(temp.toString());
+            //System.out.println(temp.toString());
 
         } catch (IOException e) {
             e.printStackTrace();

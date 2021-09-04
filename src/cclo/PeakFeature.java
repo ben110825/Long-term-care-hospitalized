@@ -3,18 +3,21 @@ package cclo;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 
 import com.google.gson.Gson;
 
 public class PeakFeature {
-
+	
+	
 	ArrayList<ArrayList> peak = new ArrayList();
-
+	String time ;
+	int countRecord;
 	FeatureType type;
-
+	
 	PeakFeature() {
 		this.type = FeatureType.未辨識;
-
+		this.countRecord = 0;
 	}
 
 	PeakFeature(ArrayList<ArrayList> peak, FeatureType type) {
@@ -43,31 +46,6 @@ public class PeakFeature {
 		setType(resultType);
 
 	}
-
-	protected ArrayList<ArrayList> getPeak() {
-
-		return peak;
-
-	}
-
-	protected void setPeak(ArrayList<ArrayList> peak) {
-
-		this.peak = peak;
-
-	}
-
-	protected FeatureType getType() {
-
-		return type;
-
-	}
-
-	protected void setType(FeatureType type) {
-
-		this.type = type;
-
-	}
-
 	public void recordingFeature(ArrayList al) {
 		peak.add(al);
 	}
@@ -76,7 +54,39 @@ public class PeakFeature {
 		String json = gson.toJson(this);
 		return json;	
 	}
-	
- 
+	protected String getTime() {
+		return time;
+	}
+
+	protected void setTime(String time) {
+		this.time = time;
+	}
+
+	protected int getCountRecord() {
+		return countRecord;
+	}
+
+	protected void setCountRecord(int countRecord) {
+		this.countRecord = countRecord;
+	}
+	protected ArrayList<ArrayList> getPeak() {
+
+		return peak;
+
+	}
+	protected void setPeak(ArrayList<ArrayList> peak) {
+
+		this.peak = peak;
+
+	}
+	protected FeatureType getType() {
+
+		return type;
+
+	}
+	protected void setType(FeatureType type) {
+		this.type = type;
+	}
+
 
 }

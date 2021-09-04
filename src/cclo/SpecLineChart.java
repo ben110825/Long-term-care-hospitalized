@@ -233,7 +233,7 @@ public class SpecLineChart extends JFrame implements ActionListener{
 		        main.dff.setStoredFileName(myFmt.format(date));
 				JOptionPane.showMessageDialog(this,"開始錄音");
 				main.dff.setRecordFlag(true);	
-				main.dff.startpeakRecord();
+				//main.dff.startpeakRecord();
 			}
 			
 		}else if(e.getSource() ==stopRecordingButton)
@@ -241,7 +241,7 @@ public class SpecLineChart extends JFrame implements ActionListener{
 			if(main.dff.getRecordFlag()) {
 				main.dff.setRecordFlag(false);
 				JOptionPane.showMessageDialog(this,"存至:"+main.dff.getStoredFilePath()+main.dff.getStoredFileName());
-				main.dff.stoppeakRecord();
+				//main.dff.stoppeakRecord();
 			}
 			else {
 				JOptionPane.showMessageDialog(this,"未錄音");
