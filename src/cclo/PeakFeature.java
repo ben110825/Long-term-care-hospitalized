@@ -33,16 +33,12 @@ public class PeakFeature {
 		this.type = FeatureType.未辨識;		// 用這個建構子
 
 	}
-	protected void analize(){
+	protected void analize(PeakFeature simpleFile){
 
 		FeatureType resultType = FeatureType.未辨識;
 
-		// ......
-
-		// ......
-
-		// ......辨識完更改type
-
+		
+		
 		setType(resultType);
 
 	}
@@ -88,5 +84,21 @@ public class PeakFeature {
 		this.type = type;
 	}
 
+<<<<<<< HEAD
+=======
+	public void recordingFeature(ArrayList al) {
+		peak.add(al);
+	}
+	public String gsonout() {
+		Gson gson = new Gson();
+		String json = gson.toJson(this);
+		return json;	
+	}
+	public boolean isEmpty() {
+		return peak.isEmpty();
+	}
+	
+ 
+>>>>>>> 1f2557b5656516ff3057244a38d5abcc050eb718
 
 }
