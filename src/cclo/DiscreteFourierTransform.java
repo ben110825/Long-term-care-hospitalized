@@ -821,26 +821,10 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 		Gson gson = new Gson();
         try (Reader reader = new FileReader(loadedFile)) {
             // Convert JSON File to Java Object
-            temp = gson.fromJson(reader, PeakFeature.class);   
-            // print staff 
-<<<<<<< HEAD
-            //System.out.println(temp.toString());
-=======
-            System.out.println(temp.getPeak());
-            
->>>>>>> 1f2557b5656516ff3057244a38d5abcc050eb718
-
-        } catch (IOException e) {
+            temp = gson.fromJson(reader, PeakFeature.class);
+        }catch (IOException e) {
             e.printStackTrace();
         }
-		/*try {
-			BufferedReader bur = new BufferedReader(new FileReader(loadedFile));
-			PeakFeature review = PeakFeature,gsonin(loadedFile);
-			//PeakFeature st = bur.readLine();
-			System.out.println();
-		} catch(IOException e) {
-			e.printStackTrace();
-		}*/
 		return temp;
 	}
 	public void setMagThresh(double magThresh_) {
