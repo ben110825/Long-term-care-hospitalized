@@ -12,12 +12,14 @@ public class PeakFeature {
 	
 	ArrayList<ArrayList> peak = new ArrayList();
 	String time ;
+	double similarity;	//相似度
 	int countRecord;
 	FeatureType type;
 	
 	PeakFeature() {
 		this.type = FeatureType.未辨識;
 		this.countRecord = 0;
+		this.similarity = 0;
 	}
 
 	PeakFeature(ArrayList<ArrayList> peak, FeatureType type) {
@@ -54,6 +56,12 @@ public class PeakFeature {
 	}
 	protected void setTime(String time) {
 		this.time = time;
+	}
+	protected double getSimilarity() {
+		return similarity;
+	}
+	protected void setSimilarity(double similarity) {
+		this.similarity = similarity;
 	}
 	protected int getCountRecord() {
 		return countRecord;

@@ -797,21 +797,20 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 		}    
 	}*/
 	public void startpeakRecord()  {
-		temp = new PeakFeature();
 		Date date = new Date();
         SimpleDateFormat myFmt=new SimpleDateFormat("yyyy_MM_dd HH_mm_ss");
         temp.setTime(myFmt.format(date));
 	}
 	public void stoppeakRecord() {
 		try {
-			File dir_file = new File(storedFilePath+temp.getTime()); 
+			File dir_file = new File(storedFilePath+temp.getTime()+".json"); 
 			dir_file.createNewFile();
-			BufferedWriter buw = new BufferedWriter(new FileWriter(storedFilePath+temp.getTime()));
+			BufferedWriter buw = new BufferedWriter(new FileWriter(storedFilePath+temp.getTime()+".json"));
 			//System.out.println(st);
 			buw.write(temp.gsonout());
 			buw.close();
 			System.out.println("儲存完畢");
-
+			temp = new PeakFeature();
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
