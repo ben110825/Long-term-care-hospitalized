@@ -247,7 +247,7 @@ public class SpecLineChart extends JFrame implements ActionListener{
 		else if(e.getSource() == clearIdentificationFileButton) {
 			identificationFile = new PeakFeature();
 		}
-		else if(e.getSource() == compareButton && hasLoadFile && !identificationFile.isEmpty()) {	//比對未完成
+		else if(e.getSource() == compareButton && hasLoadFile && !identificationFile.peak.isEmpty()) {	//比對未完成
 			System.out.println("Simple: "+simpleFile.getPeak());
 			System.out.println("Identification: "+identificationFile.getPeak());
 

@@ -52,16 +52,12 @@ public class PeakFeature {
 	protected String getTime() {
 		return time;
 	}
-
 	protected void setTime(String time) {
 		this.time = time;
 	}
-
-
 	protected int getCountRecord() {
 		return countRecord;
 	}
-
 	protected void setCountRecord(int countRecord) {
 		this.countRecord = countRecord;
 	}

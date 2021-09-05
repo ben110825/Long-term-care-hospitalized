@@ -842,6 +842,10 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 	public String getStoredFileName() {
 		return storedFileName;
 	}
+	protected String getStoredFilePath() {
+		return storedFilePath;
+	}
+
 	public void setLoadedFile(String file) {
 		this.loadedFile = file;
 	}
