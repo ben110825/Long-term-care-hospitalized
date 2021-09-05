@@ -40,7 +40,6 @@ public class PeakFeature {
 		
 		
 		setType(resultType);
-
 	}
 	public void recordingFeature(ArrayList al) {
 		peak.add(al);
@@ -57,6 +56,7 @@ public class PeakFeature {
 	protected void setTime(String time) {
 		this.time = time;
 	}
+
 
 	protected int getCountRecord() {
 		return countRecord;
@@ -83,10 +83,6 @@ public class PeakFeature {
 	protected void setType(FeatureType type) {
 		this.type = type;
 	}
-
-
-
-	
 
 	
  

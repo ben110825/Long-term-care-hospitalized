@@ -821,10 +821,12 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 		Gson gson = new Gson();
         try (Reader reader = new FileReader(loadedFile)) {
             // Convert JSON File to Java Object
+
             temp = gson.fromJson(reader, PeakFeature.class);
         }catch (IOException e) {
             e.printStackTrace();
         }
+
 		return temp;
 	}
 	public void setMagThresh(double magThresh_) {
@@ -833,9 +835,6 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 	}
 	public void setAED(Main aed_) {
 		pMain = aed_;
-	}
-	public String getStoredFilePath() {
-		return storedFilePath;
 	}
 	public void setStoredFileName(String file) {
 		this.storedFileName = file+".json";
