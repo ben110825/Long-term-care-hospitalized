@@ -45,6 +45,7 @@ public class SpecLineChart extends JFrame implements ActionListener{
     XYSeries series1;
     Main main;
     JButton startRecordingButton, stopRecordingButton, clearIdentificationFileButton, loadFileButton, compareButton;
+    Compare compare;
     // final ChartPanel chartPanel;
     public static JTextField jtf1; //類別输入框
 
@@ -207,27 +208,26 @@ public class SpecLineChart extends JFrame implements ActionListener{
 
     }
 	@Override
-	public void actionPerformed(ActionEvent e) {
-		
+	public void actionPerformed(ActionEvent e) {		
 		if(e.getSource() == startRecordingButton) {	
 			if(main.dff.getRecordFlag()) {
 				JOptionPane.showMessageDialog(this,"錄音中");
 			}
 			else {
 				main.dff.setRecordFlag(true);	
-
 				JOptionPane.showMessageDialog(this,"開始錄音");
-				//main.dff.startpeakRecord();
-
 			}
 			
-		}else if(e.getSource() ==stopRecordingButton)
+		}else if(e.getSource() ==stopRecordingButton)	//暫停錄音並把此聲音讀入程式
 		{
 			if(main.dff.getRecordFlag()) {
 				main.dff.setRecordFlag(false);
-
-				JOptionPane.showMessageDialog(this,"存至:"+main.dff.getStoredFilePath()+main.dff.temp.getTime());
-				//main.dff.stoppeakRecord();				
+				String st = main.dff.getStoredFilePath()+main.dff.temp.getTime()+".json";
+				JOptionPane.showMessageDialog(this,"存至:"+st);
+				
+				main.dff.setLoadedFile(st);
+				identificationFile = new PeakFeature();
+				identificationFile = main.dff.loadFile();		//讀入辨識檔
 
 			}
 			else {
@@ -247,11 +247,17 @@ public class SpecLineChart extends JFrame implements ActionListener{
 		else if(e.getSource() == clearIdentificationFileButton) {
 			identificationFile = new PeakFeature();
 		}
-		else if(e.getSource() == compareButton && hasLoadFile && !identificationFile.peak.isEmpty()) {	//比對未完成
+		else if(e.getSource() == compareButton && hasLoadFile && !identificationFile.getPeak().isEmpty()) {	//比對功能未完成
 			System.out.println("Simple: "+simpleFile.getPeak());
 			System.out.println("Identification: "+identificationFile.getPeak());
-
-			identificationFile.analize(simpleFile);
+			
+			int resultFromLCS = compare.lcs(simpleFile, identificationFile);
+			System.out.println("LCS結果: "+resultFromLCS);
+			System.out.println("測試檔案總數: "+ identificationFile.getPeak().size());
+			System.out.println("測試檔案相似度: "+(double)resultFromLCS/(double)identificationFile.getPeak().size());
+			System.out.println("樣本檔案總數: "+ simpleFile.getPeak().size());
+			System.out.println("樣本檔案相似度: "+(double)resultFromLCS/(double)simpleFile.getPeak().size());
+			//identificationFile.analize(simpleFile);
 		}else {
 			JOptionPane.showMessageDialog(this,"尚未載入樣本檔案，無法比對");
 		}

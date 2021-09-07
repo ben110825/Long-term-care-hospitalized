@@ -3,7 +3,7 @@ package cclo;
 import java.util.ArrayList;
 
 public class Compare {
-	public static boolean compareFile(ArrayList al1, ArrayList al2) {
+	public static boolean compareFile(ArrayList<Integer> al1, ArrayList<Integer> al2) {
 		int difference = 0;
 		boolean similar;
 		boolean[] marked = {true, true, true, true, true};
@@ -36,15 +36,20 @@ public class Compare {
 			similar  = false;
 		return similar;
 	}
-	public static int lcs(ArrayList al1, ArrayList al2) {  
-	    int len1 = al1.size();  
+	public static int lcs(PeakFeature simple, PeakFeature identification ) {  
+		ArrayList<ArrayList> al1 = simple.getPeak(); 
+		ArrayList<ArrayList> al2 = identification.getPeak(); 
+		System.out.println(al1);
+		System.out.println(al2);
+
+	    int len1 = al1.size();
 	    int len2 = al2.size();  
 	    int c[][] = new int[len1+1][len2+1];  
 	    for (int i = 0; i <= len1; i++) {  
 	        for( int j = 0; j <= len2; j++) {  
 	            if(i == 0 || j == 0) {  
 	                c[i][j] = 0;  
-	            } else if (compareFile((ArrayList)al1.get(i-1), (ArrayList)al2.get(j-1))) {  
+	            } else if (compareFile(al1.get(i-1), al2.get(j-1))) {  
 	                c[i][j] = c[i-1][j-1] + 1;  
 	            } else {  
 	                c[i][j] = Math.max(c[i - 1][j], c[i][j - 1]);  

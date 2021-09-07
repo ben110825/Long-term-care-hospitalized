@@ -738,9 +738,9 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 				temp.setCountRecord(temp.getCountRecord() + 1);
 				temp.recordingFeature(fivePeak);
 				System.out.println("錄音區塊" + temp.getCountRecord());
-			}		
+			}
 		}
-		if (recordFlag == false && temp.getCountRecord() > 0) {
+		else if (recordFlag == false && temp.getCountRecord() != 0) {
 			System.out.println("錄音停止區塊");
 			stoppeakRecord();
 			hasFirstVoice = false;
@@ -817,16 +817,17 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 		}
 	}
 	public PeakFeature loadFile() {
+		PeakFeature tempLoad = new PeakFeature();
 		Gson gson = new Gson();
         try (Reader reader = new FileReader(loadedFile)) {
             // Convert JSON File to Java Object
 
-            temp = gson.fromJson(reader, PeakFeature.class);
+        	tempLoad = gson.fromJson(reader, PeakFeature.class);
         }catch (IOException e) {
             e.printStackTrace();
         }
 
-		return temp;
+		return tempLoad;
 	}
 	public void setMagThresh(double magThresh_) {
 		SPEC_RATIO = magThresh_;
