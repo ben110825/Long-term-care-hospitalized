@@ -45,7 +45,6 @@ public class SpecLineChart extends JFrame implements ActionListener{
     XYSeries series1;
     Main main;
     JButton startRecordingButton, stopRecordingButton, clearIdentificationFileButton, loadFileButton, compareButton;
-    Compare compare;
     // final ChartPanel chartPanel;
     public static JTextField jtf1; //類別输入框
 
@@ -250,13 +249,10 @@ public class SpecLineChart extends JFrame implements ActionListener{
 		else if(e.getSource() == compareButton && hasLoadFile && !identificationFile.getPeak().isEmpty()) {	//比對功能未完成
 			System.out.println("Simple: "+simpleFile.getPeak());
 			System.out.println("Identification: "+identificationFile.getPeak());
+			identificationFile.analize(simpleFile);	
 			
-			int resultFromLCS = compare.lcs(simpleFile, identificationFile);
-			System.out.println("LCS結果: "+resultFromLCS);
-			System.out.println("測試檔案總數: "+ identificationFile.getPeak().size());
-			System.out.println("測試檔案相似度: "+(double)resultFromLCS/(double)identificationFile.getPeak().size());
-			System.out.println("樣本檔案總數: "+ simpleFile.getPeak().size());
-			System.out.println("樣本檔案相似度: "+(double)resultFromLCS/(double)simpleFile.getPeak().size());
+			
+			
 			//identificationFile.analize(simpleFile);
 		}else {
 			JOptionPane.showMessageDialog(this,"尚未載入樣本檔案，無法比對");

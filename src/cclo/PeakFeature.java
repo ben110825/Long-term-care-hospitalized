@@ -10,8 +10,9 @@ import com.google.gson.Gson;
 public class PeakFeature {
 	
 	
-	ArrayList<ArrayList> peak = new ArrayList();
+	ArrayList<ArrayList<Integer>> peak = new ArrayList();
 	String time ;
+	Compare compare;
 	double similarity;	//相似度
 	int countRecord;
 	FeatureType type;
@@ -22,14 +23,14 @@ public class PeakFeature {
 		this.similarity = 0;
 	}
 
-	PeakFeature(ArrayList<ArrayList> peak, FeatureType type) {
+	PeakFeature(ArrayList<ArrayList<Integer>> peak, FeatureType type) {
 		
 		this.peak = peak;
 		this.type = type;// 存擋用這個建構子
 		
 	}
 
-	PeakFeature(ArrayList<ArrayList> peak) {
+	PeakFeature(ArrayList<ArrayList<Integer>> peak) {
 		
 		this.peak = peak;
 		this.type = FeatureType.未辨識;		// 用這個建構子
@@ -38,18 +39,30 @@ public class PeakFeature {
 	protected void analize(PeakFeature simpleFile){
 
 		FeatureType resultType = FeatureType.未辨識;
-
+		double lengthRatio = (double)simpleFile.getCountRecord()/(double)this.getCountRecord(); //長度比例
+		if(lengthRatio > 1.2 || lengthRatio < 0.8) {	
+			System.out.println("長度相差過多");
+		}
+		else {
+			int resultFromLCS = compare.lcs(simpleFile, this);
+			System.out.println("LCS結果: "+resultFromLCS);
+			System.out.println("測試檔案總數: "+ this.getCountRecord());
+			System.out.println("測試檔案相似度: "+(double)resultFromLCS/(double)this.getCountRecord());
+		//	System.out.println("樣本檔案總數: "+ simpleFile.getCountRecord());
+		//	System.out.println("樣本檔案相似度: "+(double)resultFromLCS/(double)simpleFile.getCountRecord());
+		}
+		
 		
 		
 		setType(resultType);
 	}
-	public void recordingFeature(ArrayList al) {
+	public void recordingFeature(ArrayList<Integer> al) {
 		peak.add(al);
 	}
 	public String gsonout() {
 		Gson gson = new Gson();
 		String json = gson.toJson(this);
-		return json;	
+		return json;
 	}
 	protected String getTime() {
 		return time;
@@ -69,12 +82,12 @@ public class PeakFeature {
 	protected void setCountRecord(int countRecord) {
 		this.countRecord = countRecord;
 	}
-	protected ArrayList<ArrayList> getPeak() {
+	protected ArrayList<ArrayList<Integer>> getPeak() {
 
 		return peak;
 
 	}
-	protected void setPeak(ArrayList<ArrayList> peak) {
+	protected void setPeak(ArrayList<ArrayList<Integer>> peak) {
 
 		this.peak = peak;
 

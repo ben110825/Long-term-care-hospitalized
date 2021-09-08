@@ -24,9 +24,9 @@ public class Compare {
 		}
 		
 		if(al1.equals(tempAl) != true && al2.equals(tempAl) != true) {
-			System.out.println("AL1: "+al1);
-			System.out.println("AL2: "+al2);
-			System.out.println("Final difference: "+difference);
+	//		System.out.println("AL1: "+al1);
+	//		System.out.println("AL2: "+al2);
+	//		System.out.println("Final difference: "+difference);
 
 		}
 		
@@ -37,11 +37,11 @@ public class Compare {
 		return similar;
 	}
 	public static int lcs(PeakFeature simple, PeakFeature identification ) {  
-		ArrayList<ArrayList> al1 = simple.getPeak(); 
-		ArrayList<ArrayList> al2 = identification.getPeak(); 
-		System.out.println(al1);
-		System.out.println(al2);
-
+		ArrayList<ArrayList<Integer>> al1 = simple.getPeak(); 
+		ArrayList<ArrayList<Integer>> al2 = identification.getPeak(); 
+	//	System.out.println(al1);
+	//	System.out.println(al2);
+		
 	    int len1 = al1.size();
 	    int len2 = al2.size();  
 	    int c[][] = new int[len1+1][len2+1];  

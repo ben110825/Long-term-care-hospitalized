@@ -806,7 +806,6 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 			File dir_file = new File(storedFilePath+temp.getTime()+".json"); 
 			dir_file.createNewFile();
 			BufferedWriter buw = new BufferedWriter(new FileWriter(storedFilePath+temp.getTime()+".json"));
-			//System.out.println(st);
 			buw.write(temp.gsonout());
 			buw.close();
 			System.out.println("儲存完畢");
