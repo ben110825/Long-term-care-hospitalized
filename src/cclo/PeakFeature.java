@@ -40,17 +40,20 @@ public class PeakFeature {
 
 		FeatureType resultType = FeatureType.未辨識;
 		double lengthRatio = (double)simpleFile.getCountRecord()/(double)this.getCountRecord(); //長度比例
-		if(lengthRatio > 1.2 || lengthRatio < 0.8) {	
-			System.out.println("長度相差過多");
+		System.out.println("simple length: "+simpleFile.getCountRecord());
+		System.out.println("identification length: "+this.getCountRecord());
+
+		if(lengthRatio > 1.2 || lengthRatio < 0.8) {	//暫時先不用
+	//		System.out.println("長度相差過多");
 		}
-		else {
-			int resultFromLCS = compare.lcs(simpleFile, this);
-			System.out.println("LCS結果: "+resultFromLCS);
-			System.out.println("測試檔案總數: "+ this.getCountRecord());
-			System.out.println("測試檔案相似度: "+(double)resultFromLCS/(double)this.getCountRecord());
-		//	System.out.println("樣本檔案總數: "+ simpleFile.getCountRecord());
-		//	System.out.println("樣本檔案相似度: "+(double)resultFromLCS/(double)simpleFile.getCountRecord());
-		}
+		
+		int resultFromLCS = compare.lcs(simpleFile, this);
+		System.out.println("LCS結果: "+resultFromLCS);
+		System.out.println("樣本檔案總數: "+ simpleFile.getCountRecord());
+		System.out.println("樣本檔案相似度: "+(double)resultFromLCS/(double)simpleFile.getCountRecord());
+		System.out.println("辨識檔案總數: "+ this.getCountRecord());
+		System.out.println("辨識檔案相似度: "+(double)resultFromLCS/(double)this.getCountRecord());
+		
 		
 		
 		

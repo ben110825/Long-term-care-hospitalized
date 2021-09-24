@@ -681,7 +681,7 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 	int peakCount = 0;
 	ArrayList<Integer> fivePeak;
 	PeakFeature temp = new PeakFeature();
-	//int countRecord = 0;
+	int zeroCount = 0;
 	boolean recordFlag = false;
 	boolean hasFirstVoice = false;
 	boolean hasAmbientSound = true;
@@ -690,6 +690,7 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 	String storedFileName = "";
 	String loadedFile = "./sound_source/";    			//讀取用路徑檔
 	public void findPeak(double voice[],boolean flag) {	//找出5個特徵 若沒聲音則為0
+		boolean peakIsEmpty = false;
 		fivePeak = new ArrayList<Integer>();
 		//System.out.println(recordFlag);
 		if(flag) {
@@ -726,8 +727,9 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 		}
 		else {
 			for(int i=0;i<5;i++) {
-				fivePeak.add(0);			
-			}
+				fivePeak.add(0);	
+				peakIsEmpty = true;			
+				}
 		}
 		testAmbientSound();	
 		if (recordFlag == true) {		
@@ -737,11 +739,23 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 				if(temp.getCountRecord() == 0)startpeakRecord();
 				temp.setCountRecord(temp.getCountRecord() + 1);
 				temp.recordingFeature(fivePeak);
+				if(peakIsEmpty) {
+					zeroCount++;
+				}
+				else {
+					zeroCount = 0;
+				}
 				System.out.println("錄音區塊" + temp.getCountRecord());
 			}
 		}
 		else if (recordFlag == false && temp.getCountRecord() != 0) {
+			for(int i=temp.getCountRecord()-1;i>=temp.getCountRecord()-zeroCount;i--) {
+				temp.getPeak().remove(i);
+				temp.setCountRecord(temp.getCountRecord()-zeroCount);
+			}
 			System.out.println("錄音停止區塊");
+			//System.out.println(zeroCount);
+
 			stoppeakRecord();
 			hasFirstVoice = false;
 		}
@@ -802,6 +816,7 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
         temp.setTime(myFmt.format(date));
 	}
 	public void stoppeakRecord() {
+		System.out.println(zeroCount);
 		try {
 			File dir_file = new File(storedFilePath+temp.getTime()+".json"); 
 			dir_file.createNewFile();
