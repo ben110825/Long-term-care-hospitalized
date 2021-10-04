@@ -9,6 +9,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -235,6 +236,7 @@ public class SpecLineChart extends JFrame implements ActionListener{
 		}
 		else if(e.getSource() == loadFileButton) {	
 			JFileChooser chooser = new JFileChooser();
+			chooser.setCurrentDirectory(new File("./"));
 			int returnValue = chooser.showOpenDialog(null); 
 			String st = chooser.getSelectedFile().getAbsolutePath();
 			JOptionPane.showMessageDialog(this,"讀取至:"+st);
