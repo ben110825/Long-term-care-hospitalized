@@ -35,7 +35,7 @@ public class PeakFeature {
 		this.peak = peak;
 		this.type = FeatureType.未辨識;		// 用這個建構子
 
-	}
+	} 
 	protected void analize(PeakFeature simpleFile){
 
 		FeatureType resultType = FeatureType.未辨識;
@@ -50,9 +50,9 @@ public class PeakFeature {
 		int resultFromLCS = compare.lcs(simpleFile, this);
 		System.out.println("LCS結果: "+resultFromLCS);
 		System.out.println("樣本檔案總數: "+ simpleFile.getCountRecord());
-		System.out.println("樣本檔案相似度: "+(double)resultFromLCS/(double)simpleFile.getCountRecord());
+		System.out.println("樣本檔案相似度: "+100*((double)resultFromLCS/(double)simpleFile.getCountRecord())+" %");
 		System.out.println("辨識檔案總數: "+ this.getCountRecord());
-		System.out.println("辨識檔案相似度: "+(double)resultFromLCS/(double)this.getCountRecord());
+		System.out.println("辨識檔案相似度: "+100*((double)resultFromLCS/(double)this.getCountRecord())+" %");
 		
 		
 		

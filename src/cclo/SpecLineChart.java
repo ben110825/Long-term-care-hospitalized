@@ -1,5 +1,6 @@
 package cclo;
-
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.*;
 import java.awt.Color;
 import java.awt.Container;
@@ -37,7 +38,7 @@ import org.jfree.ui.RefineryUtilities;
  * data from an {@link XYDataset}.
  *
  */
-public class SpecLineChart extends JFrame implements ActionListener{
+public class SpecLineChart extends JFrame implements ActionListener, KeyListener{
 
     final int FFTNo = 1024;
 	boolean hasLoadFile = false; //用於檢測有無讀檔
@@ -55,6 +56,9 @@ public class SpecLineChart extends JFrame implements ActionListener{
         final XYDataset dataset = createDataset();
         final JFreeChart chart = createChart(dataset);
         final ChartPanel chartPanel = new ChartPanel(chart);
+        addKeyListener(this);
+        setFocusable(true);
+        setFocusTraversalKeysEnabled(false);
         //chartPanel.setPreferredSize(new java.awt.Dimension(1600, 400));
         //  setContentPane(chartPanel);
         this.setBounds(50, 50, 1200, 600);
@@ -208,7 +212,7 @@ public class SpecLineChart extends JFrame implements ActionListener{
 
     }
 	@Override
-	public void actionPerformed(ActionEvent e) {		
+	public void actionPerformed(ActionEvent  e) {		
 		if(e.getSource() == startRecordingButton) {	
 			if(main.dff.getRecordFlag()) {
 				JOptionPane.showMessageDialog(this,"錄音中");
@@ -218,14 +222,15 @@ public class SpecLineChart extends JFrame implements ActionListener{
 				JOptionPane.showMessageDialog(this,"開始錄音");
 			}
 			
-		}else if(e.getSource() ==stopRecordingButton)	//暫停錄音並把此聲音讀入程式
+		}else if(e.getSource() == stopRecordingButton)	//暫停錄音並把此聲音讀入程式
 		{
+			
 			if(main.dff.getRecordFlag()) {
 				main.dff.setRecordFlag(false);
-				String st = main.dff.getStoredFilePath()+main.dff.temp.getTime()+".json";
-				JOptionPane.showMessageDialog(this,"存至:"+st);
-				
-				main.dff.setLoadedFile(st);
+				main.dff.setStoredFileName(main.dff.tempPF.getTime());
+				String st = main.dff.getStoredFileName();
+				JOptionPane.showMessageDialog(this,"存至:"+st);			
+				main.dff.setLoadedFile(st); // LoadedFile儲存路徑變數可以不用,可以直接包在 function loadFile 裡
 				identificationFile = new PeakFeature();
 				identificationFile = main.dff.loadFile();		//讀入辨識檔
 
@@ -261,6 +266,35 @@ public class SpecLineChart extends JFrame implements ActionListener{
 		}
 		
 
+	}
+
+	@Override
+	public void keyTyped(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void keyPressed(KeyEvent e) {
+		// TODO Auto-generated method stub
+		int key = e.getKeyCode();
+
+	    if(key == KeyEvent.VK_SPACE){
+	    	if(main.dff.getRecordFlag()) {
+				JOptionPane.showMessageDialog(this,"錄音中");
+			}
+			else {
+				main.dff.setRecordFlag(true);	
+				JOptionPane.showMessageDialog(this,"開始錄音");
+			}      
+	    }
+		
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	

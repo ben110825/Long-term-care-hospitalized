@@ -1,8 +1,27 @@
 package cclo;
 
+import java.io.File;
 import java.util.ArrayList;
 
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+
 public class Compare {
+	public PeakFeature simpleFile;
+	public PeakFeature identificationFile;
+	public PeakFeature getSimpleFile() {
+		return simpleFile;
+	}
+	public void setSimpleFile(PeakFeature simpleFile) {
+		this.simpleFile = simpleFile;
+	}
+	
+	public PeakFeature getIdentificationFile() {
+		return identificationFile;
+	}
+	public void setIdentificationFile(PeakFeature identificationFile) {
+		this.identificationFile = identificationFile;
+	}
 	public static boolean compareFile(ArrayList<Integer> al1, ArrayList<Integer> al2) {
 		int difference = 0;
 		boolean similar;
@@ -39,6 +58,7 @@ public class Compare {
 	public static int lcs(PeakFeature simple, PeakFeature identification ) {  
 		ArrayList<ArrayList<Integer>> al1 = simple.getPeak(); 
 		ArrayList<ArrayList<Integer>> al2 = identification.getPeak(); 
+		
 	//	System.out.println(al1);
 	//	System.out.println(al2);
 		
@@ -58,5 +78,21 @@ public class Compare {
 	    }  
 	    return c[len1][len2];  
 	} 
+	public void loadfile()
+	{
+		/*
+		JFileChooser chooser = new JFileChooser();
+		chooser.setCurrentDirectory(new File("./"));
+		int returnValue = chooser.showOpenDialog(null); 
+		String st = chooser.getSelectedFile().getAbsolutePath();
+		//JOptionPane.showMessageDialog(this,"讀取至:"+st);
+		main.dff.setLoadedFile(st);
+		setSimpleFile(new PeakFeature());
+		simpleFile = main.dff.loadFile();		//讀入樣本檔
+		hasLoadFile = true;
+		*/
+		
+		
+	}
 }
 

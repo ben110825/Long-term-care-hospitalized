@@ -660,44 +660,45 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 		}
 		double sum = 0;
 		for (int i = 0; i < FFTNo; i++) {
-			shortVoice[i] = shortVoice[i] * 0.995 + Math.log10(voice[i]) * 0.005;
+			shortVoice[i] = shortVoice[i] * 0.996 + Math.log10(voice[i]) * 0.004;
 			sum += shortVoice[i];
 			voiceAvg += Math.log10(voice[i]);
 		}
 		shortVoiceAvg = sum / FFTNo;
 		voiceAvg /= FFTNo;
-	//	System.out.println("short平均 "+shortVoiceAvg);
-	//	System.out.println("平均 "+voiceAvg);
-		if (voiceAvg / shortVoiceAvg > 1.05) {
+//		 System.out.println("short平均 "+shortVoiceAvg);
+//		 System.out.println("平均 "+voiceAvg);
+		if (voiceAvg / shortVoiceAvg > 1.2) {
 			findPeak(voice, true);
-		}
-		else{
+		} else {
 			findPeak(voice, false);
 
 		}
-		
+
 	}
 
 	int peakCount = 0;
 	ArrayList<Integer> fivePeak;
-	PeakFeature temp = new PeakFeature();
+	PeakFeature tempPF = new PeakFeature();
+	PeakFeature identificationFile;
 	int zeroCount = 0;
 	boolean recordFlag = false;
 	boolean hasFirstVoice = false;
 	boolean hasAmbientSound = true;
 	int countAmbientSound = 0;
-	final String storedFilePath = "./sound_source/";    			//錄音用路徑檔
+	final String storedFilePath = "./sound_source/";
 	String storedFileName = "";
-	String loadedFile = "./sound_source/";    			//讀取用路徑檔
-	public void findPeak(double voice[],boolean flag) {	//找出5個特徵 若沒聲音則為0
+	String loadedFile = "./sound_source/"; // 讀取用路徑檔
+
+	public void findPeak(double voice[], boolean flag) { // 找出5個特徵 若沒聲音則為0
 		boolean peakIsEmpty = false;
 		fivePeak = new ArrayList<Integer>();
-		//System.out.println(recordFlag);
-		if(flag) {
+		// System.out.println(recordFlag);
+		if (flag) {
 			for (int i = 0; i < FFTNo - 5; i++) {
 				// System.out.println(voice[i]);
 				int leftBoundary = i;
-				int rightBoundary = leftBoundary +5;
+				int rightBoundary = leftBoundary + 5;
 				int mid = (leftBoundary + rightBoundary) / 2;
 				int max = leftBoundary;
 				for (int j = leftBoundary; j < rightBoundary; j++) {
@@ -722,140 +723,170 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 							fivePeak.set(small, max);
 						}
 					}
-				}			
+				}
+			}
+		} else {
+			for (int i = 0; i < 5; i++) {
+				fivePeak.add(0);
+				peakIsEmpty = true;
 			}
 		}
-		else {
-			for(int i=0;i<5;i++) {
-				fivePeak.add(0);	
-				peakIsEmpty = true;			
-				}
-		}
-		testAmbientSound();	
-		if (recordFlag == true) {		
-			if (voiceAvg / shortVoiceAvg > 1.1 || hasFirstVoice) {		//有聲音才正式開始記錄
+		testAmbientSound();
+		if (recordFlag == true) {
+			if (voiceAvg / shortVoiceAvg > 1.2 || hasFirstVoice) { // 有聲音才正式開始記錄
 				hasFirstVoice = true;
 				bubbleSort(fivePeak, voice);
-				if(temp.getCountRecord() == 0)startpeakRecord();
-				temp.setCountRecord(temp.getCountRecord() + 1);
-				temp.recordingFeature(fivePeak);
-				if(peakIsEmpty) {
+				if (tempPF.getCountRecord() == 0)
+					startpeakRecord();
+				tempPF.setCountRecord(tempPF.getCountRecord() + 1);
+				System.out.println("錄音區塊" + tempPF.getCountRecord());
+				tempPF.recordingFeature(fivePeak);
+				if (peakIsEmpty) {
 					zeroCount++;
-				}
-				else {
+					System.out.println(zeroCount);
+					if (zeroCount >= 60) {
+						setRecordFlag(false);
+						setStoredFileName(tempPF.getTime());
+						String st = getStoredFileName();
+						int tempCount = tempPF.getCountRecord() - 1;
+						for (int i = tempCount; i > tempCount - zeroCount; i--) {
+							tempPF.getPeak().remove(i);
+						}
+						tempPF.setCountRecord(tempPF.getCountRecord()-zeroCount);
+						stoppeakRecord();
+						setLoadedFile(st);
+						pMain.freqFr.identificationFile = new PeakFeature();
+						pMain.freqFr.identificationFile= loadFile(); // 讀入辨識檔
+						zeroCount = 0; //初始化zeroCount
+						hasFirstVoice = false;
+						System.out.println("錄音停止區塊");
+
+						
+					}
+				} else {
 					zeroCount = 0;
+
 				}
-				System.out.println("錄音區塊" + temp.getCountRecord());
 			}
 		}
-		else if (recordFlag == false && temp.getCountRecord() != 0) {
-			int tempCount = temp.getCountRecord()-1;
-			for(int i=tempCount;i>=tempCount-zeroCount;i--) {
-				temp.getPeak().remove(i);
+		else if (recordFlag == false && tempPF.getCountRecord() != 0) {	//把後面的0消除
+			System.out.println("zeroCount"+zeroCount);
+			int tempCount = tempPF.getCountRecord() - 1;
+			for (int i = tempCount; i > tempCount - zeroCount; i--) {
+				tempPF.getPeak().remove(i);
 			}
-			temp.setCountRecord(temp.getCountRecord()-zeroCount);
+
+			tempPF.setCountRecord(tempPF.getCountRecord()-zeroCount);
+			System.out.println(tempPF.getCountRecord());
 			System.out.println("錄音停止區塊");
 
 			stoppeakRecord();
 			hasFirstVoice = false;
-			
+
 		}
 	}
 
-	public void testAmbientSound() {	// 按下按鈕後 測試環境音
+	public void testAmbientSound() { 
 		ArrayList<Integer> tempAl = new ArrayList<Integer>();
-		for(int i=0;i<5;i++) {
+		for (int i = 0; i < 5; i++) {
 			tempAl.add(0);
 		}
-		if(tempAl.equals(getFivePeak())) {
+		if (tempAl.equals(getFivePeak())) {
 			hasAmbientSound = false;
 			countAmbientSound++;
 		}
 
-		if (hasAmbientSound || countAmbientSound<100) { 
+		if (hasAmbientSound || countAmbientSound < 100) {
 			System.out.println("測試環境音中...");
 		} else {
-			if(countAmbientSound == 105)
+			if (countAmbientSound == 105)
 				System.out.println("測試完畢");
 			pMain.tFrame.panel.updatePanel(fivePeak);
 
 		}
-			
+
 	}
-	public void bubbleSort(ArrayList<Integer> al, double voice[]) {		//排序al
+
+	public void bubbleSort(ArrayList<Integer> al, double voice[]) { // 排序al
 		int length = al.size();
 		int temp;
 		boolean isSorted;
-		
-		for(int i=0;i<length; i++){
+
+		for (int i = 0; i < length; i++) {
 			isSorted = true;
-			for(int j=0;j<length-1; j++) {
-				if(voice[(int)al.get(j)] < voice[(int)al.get(j+1)]) {			//若後大於前則互換
-					temp = (int)al.get(j);
-					al.set(j, al.get(j+1));
-					al.set(j+1, temp);
+			for (int j = 0; j < length - 1; j++) {
+				if (voice[(int) al.get(j)] < voice[(int) al.get(j + 1)]) { // 若後大於前則互換
+					temp = (int) al.get(j);
+					al.set(j, al.get(j + 1));
+					al.set(j + 1, temp);
 					isSorted = false;
 				}
 			}
-			if(isSorted)
+			if (isSorted)
 				break;
 		}
-	}	
-	/*public void createNewStroedFile() {		//建立新檔案
-	    try {
-	    	//System.out.println(storedFilePath+storedFileName);
-		    File dir_file = new File(storedFilePath+temp.getTime());   
-			dir_file.createNewFile();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}    
-	}*/
-	public void startpeakRecord()  {
-		Date date = new Date();
-        SimpleDateFormat myFmt=new SimpleDateFormat("yyyy_MM_dd HH_mm_ss");
-        temp.setTime(myFmt.format(date));
 	}
+
+	/*
+	 * public void createNewStroedFile() { //建立新檔案 try {
+	 * //System.out.println(storedFilePath+storedFileName); File dir_file = new
+	 * File(storedFilePath+temp.getTime()); dir_file.createNewFile(); } catch
+	 * (IOException e) { // TODO Auto-generated catch block e.printStackTrace(); } }
+	 */
+	public void startpeakRecord() {
+		Date date = new Date();
+		SimpleDateFormat myFmt = new SimpleDateFormat("yyyy_MM_dd HH_mm_ss");
+		tempPF.setTime(myFmt.format(date));
+	}
+
 	public void stoppeakRecord() {
 		try {
-			File dir_file = new File(storedFilePath+temp.getTime()+".json"); 
+			System.out.println("storedFileName " + storedFileName);
+			File dir_file = new File(storedFileName);
 			dir_file.createNewFile();
-			BufferedWriter buw = new BufferedWriter(new FileWriter(storedFilePath+temp.getTime()+".json"));
-			buw.write(temp.gsonout());
+			BufferedWriter buw = new BufferedWriter(new FileWriter(storedFileName));
+			buw.write(tempPF.gsonout());
 			buw.close();
 			System.out.println("儲存完畢");
-			temp = new PeakFeature();
+			tempPF = new PeakFeature();
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 	}
+
 	public PeakFeature loadFile() {
 		PeakFeature tempLoad = new PeakFeature();
+	//	System.out.println("LoadFile " + loadedFile);
 		Gson gson = new Gson();
-        try (Reader reader = new FileReader(loadedFile)) {
-            // Convert JSON File to Java Object
+		try (Reader reader = new FileReader(loadedFile)) {
+			// Convert JSON File to Java Object
 
-        	tempLoad = gson.fromJson(reader, PeakFeature.class);
-        }catch (IOException e) {
-            e.printStackTrace();
-        }
+			tempLoad = gson.fromJson(reader, PeakFeature.class);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
 		return tempLoad;
 	}
+
 	public void setMagThresh(double magThresh_) {
 		SPEC_RATIO = magThresh_;
 		System.out.println("\nMag_Thresh: " + SPEC_RATIO);
 	}
+
 	public void setAED(Main aed_) {
 		pMain = aed_;
 	}
+
 	public void setStoredFileName(String file) {
-		this.storedFileName = file+".json";
+		this.storedFileName = storedFilePath + file + "_Test" + ".json";
 	}
+
 	public String getStoredFileName() {
 		return storedFileName;
 	}
+
 	protected String getStoredFilePath() {
 		return storedFilePath;
 	}
@@ -863,18 +894,21 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 	public void setLoadedFile(String file) {
 		this.loadedFile = file;
 	}
+
 	public String getLoadedFile() {
 		return loadedFile;
 	}
+
 	public boolean getRecordFlag() {
 		return recordFlag;
 	}
+
 	public ArrayList<Integer> getFivePeak() {
 
 		return fivePeak;
 	}
+
 	protected void setRecordFlag(boolean recordFlag) {
 		this.recordFlag = recordFlag;
 	}
 }
-
