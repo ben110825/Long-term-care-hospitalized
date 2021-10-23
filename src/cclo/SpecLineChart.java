@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.*;
 
@@ -214,10 +215,18 @@ public class SpecLineChart extends JFrame implements ActionListener, KeyListener
 	@Override
 	public void actionPerformed(ActionEvent  e) {		
 		if(e.getSource() == startRecordingButton) {	
+			
 			if(main.dff.getRecordFlag()) {
 				JOptionPane.showMessageDialog(this,"錄音中");
 			}
 			else {
+				try {
+					TimeUnit.SECONDS.sleep(1);	//暫停一秒
+				} catch (InterruptedException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+
 				main.dff.setRecordFlag(true);	
 				JOptionPane.showMessageDialog(this,"開始錄音");
 			}

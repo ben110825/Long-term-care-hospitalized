@@ -31,25 +31,29 @@ public class Compare {
 			tempAl.add(0);
 		}
 		for(int i=0;i<3;i++) {					//al1的前三個重要的與al2五個比
-			int Most_similar_location = 0;  	//與al1第i個最相似位置
+			int Most_similar_location = i;  	//與al1第i個最相似位置
 			for(int j=0;j<al2.size();j++) {
 				if(Math.abs((int)al2.get(Most_similar_location)-(int)al1.get(i)) >= Math.abs((int)al2.get(j)-(int)al1.get(i))) {
-					if(marked[j])
+					if(marked[j]) {
+						
 						Most_similar_location = j;
+					}
 				}
 			}
 			marked[Most_similar_location] = false;
-			difference += Math.abs((int)al2.get(Most_similar_location)-(int)al1.get(i));								
+			difference += Math.abs((int)al2.get(Most_similar_location)-(int)al1.get(i));
+
 		}
+
 		
 		if(al1.equals(tempAl) != true && al2.equals(tempAl) != true) {
-	//		System.out.println("AL1: "+al1);
-	//		System.out.println("AL2: "+al2);
-	//		System.out.println("Final difference: "+difference);
+//			System.out.println("AL1: "+al1);
+//			System.out.println("AL2: "+al2);
+//			System.out.println("Final difference: "+difference);
 
 		}
 		
-		if(difference < 20)		//相似
+		if(difference < 30)		//相似
 			similar = true;
 		else					//不相似
 			similar  = false;

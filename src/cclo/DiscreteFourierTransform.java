@@ -693,24 +693,38 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 	public void findPeak(double voice[], boolean flag) { // 找出5個特徵 若沒聲音則為0
 		boolean peakIsEmpty = false;
 		fivePeak = new ArrayList<Integer>();
+		int max = 0;
 		// System.out.println(recordFlag);
 		if (flag) {
-			for (int i = 0; i < FFTNo - 5; i++) {
+//			for(int i=0;i<FFTNo;i++) {
+//				int max = 0;
+//				if(voice[max] < voice[i])
+//					max = i;
+//			}
+			for (int i = 1; i < FFTNo-1 ; i++) {
 				// System.out.println(voice[i]);
-				int leftBoundary = i;
-				int rightBoundary = leftBoundary + 5;
-				int mid = (leftBoundary + rightBoundary) / 2;
-				int max = leftBoundary;
-				for (int j = leftBoundary; j < rightBoundary; j++) {
-					// System.out.println("MAX ="+voice[max] +" "+"j = "+voice[j]);
-					if (voice[j] > voice[max]) {
-						max = j;
-					}
+//				int leftBoundary = i;
+//				int rightBoundary = leftBoundary + 5;
+//				int mid = (leftBoundary + rightBoundary) / 2;
+//				int max = leftBoundary;
+//				for (int j = leftBoundary; j < rightBoundary; j++) {
+//					// System.out.println("MAX ="+voice[max] +" "+"j = "+voice[j]);
+//					if (Math.log10(voice[j]) > Math.log10(voice[max])) {
+//						max = j;
+//					}
+//				}
+				boolean findmax = false;
+				if(voice[i+1] < voice[i] && voice[i-1] < voice[i]) {
+					max = i;
+					findmax = true;
 				}
-				if (voice[max] == voice[mid]) {
+					
+				
+//				if (Math.log10(voice[max]) == Math.log10(voice[mid]))
+				if (findmax) {
 					// System.out.println(mid);
 					if (fivePeak.size() < 5) {
-						fivePeak.add(mid);
+						fivePeak.add(max);
 					} else {
 						int small = 0;
 						for (int j = 0; j < fivePeak.size(); j++) {
@@ -731,11 +745,14 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 				peakIsEmpty = true;
 			}
 		}
+
 		testAmbientSound();
 		if (recordFlag == true) {
 			if (voiceAvg / shortVoiceAvg > 1.2 || hasFirstVoice) { // 有聲音才正式開始記錄
 				hasFirstVoice = true;
-				bubbleSort(fivePeak, voice);
+				System.out.println(fivePeak.toString());
+
+				bubbleSort(fivePeak, voice);		
 				if (tempPF.getCountRecord() == 0)
 					startpeakRecord();
 				tempPF.setCountRecord(tempPF.getCountRecord() + 1);
@@ -810,20 +827,17 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 	public void bubbleSort(ArrayList<Integer> al, double voice[]) { // 排序al
 		int length = al.size();
 		int temp;
-		boolean isSorted;
 
 		for (int i = 0; i < length; i++) {
-			isSorted = true;
+
 			for (int j = 0; j < length - 1; j++) {
-				if (voice[(int) al.get(j)] < voice[(int) al.get(j + 1)]) { // 若後大於前則互換
+				if (Math.log10(voice[(int) al.get(j)]) < Math.log10(voice[(int) al.get(j+1)])) { // 若後大於前則互換
 					temp = (int) al.get(j);
 					al.set(j, al.get(j + 1));
 					al.set(j + 1, temp);
-					isSorted = false;
 				}
 			}
-			if (isSorted)
-				break;
+			
 		}
 	}
 
