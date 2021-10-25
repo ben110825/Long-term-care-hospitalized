@@ -21,11 +21,11 @@ public class IOPan extends JPanel {
     int sLevel = -1;
     double error = 0.0;
     Scorer father;
-    JTextField tfLevel = new JTextField();
-    JTextField tfError = new JTextField();
+    JTextField tfSample = new JTextField();				
+    JTextField tfIdentification = new JTextField();		//需要辨識的檔案(未知)
     JTextField tfResult = new JTextField();
-    JLabel lbLevel = new JLabel("樣本");
-    JLabel lbError = new JLabel("檔案");
+    JLabel lbSample = new JLabel("<html><body>樣本檔案<br><center>(已知)<center><body></html>");
+    JLabel lbFile   = new JLabel("<html><body>錄音檔案<br><center>(未知)<center><body></html>");
     String name[] = {
         "0 Do", "0 Do+", "0 Re", "0 Re+", "0 Mi", "0 Fa", "0 Fa+", "0 Sol", "0 Sol+", "0 La", "0 La+", "0 Si",
         "1 Do", "1 Do+", "1 Re", "1 Re+", "1 Mi", "1 Fa", "1 Fa+", "1 Sol", "1 Sol+", "1 La", "1 La+", "1 Si",
@@ -40,10 +40,10 @@ public class IOPan extends JPanel {
     int max, cNo = 0, tNo = 0;
     int extLev;
     double ratio = 0.0;
-    JTextField tfRatio = new JTextField();
-    JLabel lbPerc = new JLabel("准确率");
+    JTextField tfAcc = new JTextField();
+    JLabel lbAcc = new JLabel("準確率");
 //    JLabel lbTone = new JLabel("類別");
-    JLabel lbResult = new JLabel("结果");
+    JLabel lbResult = new JLabel("結果");
 //    JComboBox cbTone = new JComboBox(toneName);
     static int mNo = 0;
     int bias = 0;
@@ -53,50 +53,50 @@ public class IOPan extends JPanel {
         main = main_;
 
         this.setLayout(new GridLayout(1, 8, 5, 5));
-        lbLevel.setFont(new Font("Serif", Font.BOLD, 48));
-        lbError.setFont(new Font("Serif", Font.BOLD, 48));
-        lbPerc.setFont(new Font("Serif", Font.BOLD, 48));
-        tfLevel.setFont(new Font("Serif", Font.BOLD, 48));
-        tfError.setFont(new Font("Serif", Font.BOLD, 48));
-        tfRatio.setFont(new Font("Serif", Font.BOLD, 48));
+        lbSample.setFont(new Font("Serif", Font.BOLD, 36));
+        lbFile.setFont(new Font("Serif", Font.BOLD, 36));
+        lbAcc.setFont(new Font("Serif", Font.BOLD, 48));
+        tfSample.setFont(new Font("Serif", Font.BOLD, 16));
+        tfIdentification.setFont(new Font("Serif", Font.BOLD, 16));
+        tfAcc.setFont(new Font("Serif", Font.BOLD, 48));
         lbResult.setFont(new Font("Serif", Font.BOLD, 48));
         tfResult.setFont(new Font("Serif", Font.BOLD, 48));
 
-        lbLevel.setHorizontalAlignment(JLabel.HORIZONTAL);
-        lbError.setHorizontalAlignment(JLabel.HORIZONTAL);
-        lbPerc.setHorizontalAlignment(JLabel.HORIZONTAL);
-        tfLevel.setHorizontalAlignment(JLabel.HORIZONTAL);
-        tfError.setHorizontalAlignment(JLabel.HORIZONTAL);
-        tfRatio.setHorizontalAlignment(JLabel.HORIZONTAL);
+        lbSample.setHorizontalAlignment(JLabel.HORIZONTAL);
+        lbFile.setHorizontalAlignment(JLabel.HORIZONTAL);
+        lbAcc.setHorizontalAlignment(JLabel.HORIZONTAL);
+        tfSample.setHorizontalAlignment(JLabel.HORIZONTAL);
+        tfIdentification.setHorizontalAlignment(JLabel.HORIZONTAL);
+        tfAcc.setHorizontalAlignment(JLabel.HORIZONTAL);
         lbResult.setHorizontalAlignment(JLabel.HORIZONTAL);
         tfResult.setHorizontalAlignment(JLabel.HORIZONTAL);
 
         //ImageIcon levelIcon = new ImageIcon(new ImageIcon("level.png").getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH));
-        // lbLevel.setIcon(levelIcon);
-        lbLevel.setOpaque(true);
-        lbLevel.setForeground(Color.WHITE);
-        lbLevel.setBackground(new Color(38, 77, 0));
-        //tfLevel.setBackground(new Color(38, 77, 0));
-        //tfLevel.setForeground(Color.WHITE);
-        // lbError.setIcon(levelIcon);
-        lbError.setOpaque(true);
-        lbError.setForeground(Color.WHITE);
-        lbError.setBackground(new Color(140, 60, 32));
-        //tfError.setBackground(new Color(70, 90, 140));
-        //tfError.setForeground(Color.WHITE);
-        add(lbLevel);
-        add(tfLevel);
+        // lbSample.setIcon(levelIcon);
+        lbSample.setOpaque(true);
+        lbSample.setForeground(Color.WHITE);
+        lbSample.setBackground(new Color(38, 77, 0));
+        //tfSample.setBackground(new Color(38, 77, 0));
+        //tfSample.setForeground(Color.WHITE);
+        // lbFile.setIcon(levelIcon);
+        lbFile.setOpaque(true);
+        lbFile.setForeground(Color.WHITE);
+        lbFile.setBackground(new Color(140, 60, 32));
+        //tfIdentification.setBackground(new Color(70, 90, 140));
+        //tfIdentification.setForeground(Color.WHITE);
+        add(lbSample);
+        add(tfSample);
 
-        add(lbError);
-        add(tfError);
-        tfLevel.setEditable(false);
-        tfError.setEditable(false);
+        add(lbFile);
+        add(tfIdentification);
+        tfSample.setEditable(false);
+        tfIdentification.setEditable(false);
         tfResult.setEditable(false);
-        lbPerc.setOpaque(true);
-        lbPerc.setForeground(Color.WHITE);
-        lbPerc.setBackground(new Color(80, 0, 80));
-        //tfRatio.setBackground(new Color(80, 0, 80));
-//        //tfRatio.setForeground(Color.WHITE);
+        lbAcc.setOpaque(true);
+        lbAcc.setForeground(Color.WHITE);
+        lbAcc.setBackground(new Color(80, 0, 80));
+        //tfAcc.setBackground(new Color(80, 0, 80));
+//        //tfAcc.setForeground(Color.WHITE);
 //        lbTone.setOpaque(true);
 //        lbTone.setForeground(Color.WHITE);
 //        lbTone.setBackground(new Color(70, 90, 140));
@@ -105,18 +105,19 @@ public class IOPan extends JPanel {
         lbResult.setForeground(Color.WHITE);
         lbResult.setBackground(new Color(15, 115, 140));
 
-        add(lbPerc);
-        add(tfRatio);
+        add(lbAcc);
+        add(tfAcc);
 //
 //        add(lbTone);
 //        add(cbTone);
 
+        
         add(lbResult);
         add(tfResult);
-
-        // add(tfError);
-        tfRatio.setEditable(false);
-        tfError.setEditable(false);
+        
+        // add(tfIdentification);
+        tfAcc.setEditable(false);
+        tfIdentification.setEditable(false);
 
 //        cbTone.addItemListener(new ItemListener() {
 //            @Override
@@ -178,14 +179,14 @@ public class IOPan extends JPanel {
                 return false;
             }
             if (sLevel + bias >= 0) {
-                tfLevel.setText(name[sLevel + bias]);
+          //      tfSample.setText(name[sLevel + bias]);
             }
-            tfError.setText(df.format(error));
+         //   tfIdentification.setText(df.format(error));
             repaint();
             return true;
         } else {
-            tfLevel.setText("");
-            tfError.setText("");
+          //  tfSample.setText("");
+          //  tfIdentification.setText("");
             return false;
         }
     }
@@ -203,7 +204,7 @@ public class IOPan extends JPanel {
                 trig = false;
                 silNo = actNo = 0;
                 ratio = (double) silNo / ((double) actNo + 0.1) * 100.0;
-                tfRatio.setText(df.format(ratio) + " %");
+             //   tfAcc.setText(df.format(ratio) + " %");
                 for (int i = 0; i < 100; i++) {
                     levCounter[i] = 0;
                 }
@@ -222,7 +223,7 @@ public class IOPan extends JPanel {
         if (actNo > 40) {
             trig = true;
             ratio = (double) levCounter[lev] / ((double) actNo + 0.1) * 100.0;
-            tfRatio.setText(df.format(ratio) + " %");
+//            tfAcc.setText(df.format(ratio) + " %");
         }
         /*
         for (int i = 0; i < 100; i++) {
@@ -253,14 +254,15 @@ public class IOPan extends JPanel {
          
         if (trig) {
             ratio = (double) cNo / ((double) tNo + 0.1) * 100.0;
-            tfRatio.setText(df.format(ratio) + " %");
+            tfAcc.setText(df.format(ratio) + " %");
             // repaint();
         }
          */
     }
-
+    
     public void setError(double error_) {
         error = error_;
     }
 
+    
 }

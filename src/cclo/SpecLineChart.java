@@ -42,8 +42,7 @@ import org.jfree.ui.RefineryUtilities;
 public class SpecLineChart extends JFrame implements ActionListener, KeyListener{
 
     final int FFTNo = 1024;
-	boolean hasLoadFile = false; //用於檢測有無讀檔
-	PeakFeature simpleFile;
+	PeakFeature sampleFile;
 	PeakFeature identificationFile;
     XYSeries series1;
     Main main;
@@ -215,7 +214,6 @@ public class SpecLineChart extends JFrame implements ActionListener, KeyListener
 	@Override
 	public void actionPerformed(ActionEvent  e) {		
 		if(e.getSource() == startRecordingButton) {	
-			
 			if(main.dff.getRecordFlag()) {
 				JOptionPane.showMessageDialog(this,"錄音中");
 			}
@@ -249,50 +247,74 @@ public class SpecLineChart extends JFrame implements ActionListener, KeyListener
 			}
 		}
 		else if(e.getSource() == loadFileButton) {	
-			
-			
-			
+						
 						
 			JFileChooser chooser = new JFileChooser();
-			chooser.setCurrentDirectory(new File("./"));
-			int returnValue = chooser.showOpenDialog(null); 
-			String st = chooser.getSelectedFile().getAbsolutePath();
-			JOptionPane.showMessageDialog(this,"讀取至:"+st);
-			//main.dff.setLoadedFile(st);
-			simpleFile = new PeakFeature();
-			simpleFile = main.dff.loadFile(st);		//讀入樣本檔
-			hasLoadFile = true;
-		}
+			chooser.setCurrentDirectory(new File("./sound_source"));
+			int returnValue = chooser.showOpenDialog(null);
+			try {
+				String st = chooser.getSelectedFile().getAbsolutePath();
+				JOptionPane.showMessageDialog(this,"讀取至:"+st);
+				//main.dff.setLoadedFile(st);
+				sampleFile = new PeakFeature();
+				sampleFile = main.dff.loadFile(st);		//讀入樣本檔
+				main.ioPan.tfSample.setText(chooser.getSelectedFile().getName());
+
+			}
+			catch(NullPointerException exception) {
+				
+			}
+					}
 		else if(e.getSource() == clearIdentificationFileButton) {
+			main.ioPan.tfIdentification.setText("");
 			identificationFile = new PeakFeature();
 		}
-		else if(e.getSource() == compareButton && hasLoadFile && !identificationFile.getPeak().isEmpty()) {//比對功能未完成
+		else if(e.getSource() == compareButton && !sampleFile.getPeak().isEmpty() && !identificationFile.getPeak().isEmpty()) {//比對功能未完成
 			//FeatureType resultType = FeatureType.未辨識;
-			double lengthRatio = (double)simpleFile.getCountRecord()/(double)identificationFile.getCountRecord(); //長度比例
-			System.out.println("simple length: "+simpleFile.getCountRecord());
+			double lengthRatio = (double)sampleFile.getCountRecord()/(double)identificationFile.getCountRecord(); //長度比例
+			System.out.println("simple length: "+sampleFile.getCountRecord());
 			System.out.println("identification length: "+identificationFile.getCountRecord());
 
 			if(lengthRatio > 1.2 || lengthRatio < 0.8) {	//暫時先不用
 		//		System.out.println("長度相差過多");
 			}
 			
-			int resultFromLCS = Compare.lcs(simpleFile, identificationFile);
+			int resultFromLCS = Compare.lcs(sampleFile, identificationFile);
 			System.out.println("LCS結果: "+resultFromLCS);
-			System.out.println("樣本檔案總數: "+ simpleFile.getCountRecord());
-			System.out.println("樣本檔案相似度: "+100*((double)resultFromLCS/(double)simpleFile.getCountRecord())+" %");
+			System.out.println("樣本檔案總數: "+ sampleFile.getCountRecord());
+			System.out.println("樣本檔案相似度: "+100*((double)resultFromLCS/(double)sampleFile.getCountRecord())+" %");
 			System.out.println("辨識檔案總數: "+ identificationFile.getCountRecord());
 			System.out.println("辨識檔案相似度: "+100*((double)resultFromLCS/(double)identificationFile.getCountRecord())+" %");
-			
-			
-//			System.out.println("Simple: "+simpleFile.getPeak());
+			int acc = (int) (100*((double)resultFromLCS/(double)sampleFile.getCountRecord()));
+			main.ioPan.tfAcc.setText(acc+" %");
+			if((double)resultFromLCS/(double)sampleFile.getCountRecord() > 0) {		//若相似
+				main.ioPan.tfResult.setText(sampleFile.getType().toString());	
+				identificationFile.setType(sampleFile.getType());			//改變type
+				try {
+					//	System.out.println("storedFileName " + storedFileName);
+						String st = main.ioPan.tfIdentification.getText();
+						File dir_file = new File(st);
+						dir_file.createNewFile();
+						BufferedWriter buw = new BufferedWriter(new FileWriter(st));
+						buw.write(identificationFile.gsonout());
+						buw.close();
+						System.out.println("儲存完畢"+st);
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+			}
+			else
+				main.ioPan.tfResult.setText("-1");
+//			System.out.println("Sample: "+sampleFile.getPeak());
 //			System.out.println("Identification: "+identificationFile.getPeak());
-//			identificationFile.analize(simpleFile);	
+//			identificationFile.analize(sampleFile);	
 			
 			
 			
-			//identificationFile.analize(simpleFile);
+			//identificationFile.analize(sampleFile);
 		}else {
-			JOptionPane.showMessageDialog(this,"尚未載入樣本檔案，無法比對");
+			JOptionPane.showMessageDialog(this,"尚未載入樣本檔案或辨識檔案，無法比對");
 		}
 		
 

@@ -666,8 +666,8 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 		}
 		shortVoiceAvg = sum / FFTNo;
 		voiceAvg /= FFTNo;
-//		 System.out.println("short平均 "+shortVoiceAvg);
-//		 System.out.println("平均      "+voiceAvg);
+//		System.out.println("short平均 "+shortVoiceAvg);
+//		System.out.println("平均      "+voiceAvg);
 		if (voiceAvg / shortVoiceAvg > 1.05) {
 			findPeak(voice, true);
 
@@ -680,7 +680,7 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 	int peakCount = 0;
 	ArrayList<Integer> fivePeak;
 	PeakFeature tempPF = new PeakFeature();
-	PeakFeature identificationFile;
+
 	int zeroCount = 0;
 	boolean recordFlag = false;
 	boolean hasFirstVoice = false;
@@ -770,9 +770,9 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 						}
 						tempPF.setCountRecord(tempPF.getCountRecord()-zeroCount);
 						stoppeakRecord();
-						//setLoadedFile(st);
 						pMain.freqFr.identificationFile = new PeakFeature();
 						pMain.freqFr.identificationFile= loadFile(st); // 讀入辨識檔
+						pMain.ioPan.tfIdentification.setText(st);	//目前先使用路徑+檔名
 						zeroCount = 0; //初始化zeroCount
 						hasFirstVoice = false;
 						System.out.println("錄音停止區塊");
@@ -813,10 +813,10 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 			countAmbientSound++;
 		}
 
-		if (hasAmbientSound || countAmbientSound < 100) {
+		if (hasAmbientSound || countAmbientSound < 200) {
 			System.out.println("測試環境音中...");
 		} else {
-			if (countAmbientSound == 100) {
+			if (countAmbientSound == 200) {
 				System.out.println("測試完畢");
 			}
 			
@@ -856,7 +856,7 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 
 	public void stoppeakRecord() {
 		try {
-			System.out.println("storedFileName " + storedFileName);
+		//	System.out.println("storedFileName " + storedFileName);
 			File dir_file = new File(storedFileName);
 			dir_file.createNewFile();
 			BufferedWriter buw = new BufferedWriter(new FileWriter(storedFileName));
