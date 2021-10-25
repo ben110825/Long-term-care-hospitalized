@@ -239,9 +239,9 @@ public class SpecLineChart extends JFrame implements ActionListener, KeyListener
 				main.dff.setStoredFileName(main.dff.tempPF.getTime());
 				String st = main.dff.getStoredFileName();
 				JOptionPane.showMessageDialog(this,"存至:"+st);			
-				main.dff.setLoadedFile(st); // LoadedFile儲存路徑變數可以不用,可以直接包在 function loadFile 裡
+				//main.dff.setLoadedFile(st); // LoadedFile儲存路徑變數可以不用,可以直接包在 function loadFile 裡
 				identificationFile = new PeakFeature();
-				identificationFile = main.dff.loadFile();		//讀入辨識檔
+				identificationFile = main.dff.loadFile(st);		//讀入辨識檔
 
 			}
 			else {
@@ -249,23 +249,44 @@ public class SpecLineChart extends JFrame implements ActionListener, KeyListener
 			}
 		}
 		else if(e.getSource() == loadFileButton) {	
+			
+			
+			
+						
 			JFileChooser chooser = new JFileChooser();
 			chooser.setCurrentDirectory(new File("./"));
 			int returnValue = chooser.showOpenDialog(null); 
 			String st = chooser.getSelectedFile().getAbsolutePath();
 			JOptionPane.showMessageDialog(this,"讀取至:"+st);
-			main.dff.setLoadedFile(st);
+			//main.dff.setLoadedFile(st);
 			simpleFile = new PeakFeature();
-			simpleFile = main.dff.loadFile();		//讀入樣本檔
+			simpleFile = main.dff.loadFile(st);		//讀入樣本檔
 			hasLoadFile = true;
 		}
 		else if(e.getSource() == clearIdentificationFileButton) {
 			identificationFile = new PeakFeature();
 		}
-		else if(e.getSource() == compareButton && hasLoadFile && !identificationFile.getPeak().isEmpty()) {	//比對功能未完成
-			System.out.println("Simple: "+simpleFile.getPeak());
-			System.out.println("Identification: "+identificationFile.getPeak());
-			identificationFile.analize(simpleFile);	
+		else if(e.getSource() == compareButton && hasLoadFile && !identificationFile.getPeak().isEmpty()) {//比對功能未完成
+			//FeatureType resultType = FeatureType.未辨識;
+			double lengthRatio = (double)simpleFile.getCountRecord()/(double)identificationFile.getCountRecord(); //長度比例
+			System.out.println("simple length: "+simpleFile.getCountRecord());
+			System.out.println("identification length: "+identificationFile.getCountRecord());
+
+			if(lengthRatio > 1.2 || lengthRatio < 0.8) {	//暫時先不用
+		//		System.out.println("長度相差過多");
+			}
+			
+			int resultFromLCS = Compare.lcs(simpleFile, identificationFile);
+			System.out.println("LCS結果: "+resultFromLCS);
+			System.out.println("樣本檔案總數: "+ simpleFile.getCountRecord());
+			System.out.println("樣本檔案相似度: "+100*((double)resultFromLCS/(double)simpleFile.getCountRecord())+" %");
+			System.out.println("辨識檔案總數: "+ identificationFile.getCountRecord());
+			System.out.println("辨識檔案相似度: "+100*((double)resultFromLCS/(double)identificationFile.getCountRecord())+" %");
+			
+			
+//			System.out.println("Simple: "+simpleFile.getPeak());
+//			System.out.println("Identification: "+identificationFile.getPeak());
+//			identificationFile.analize(simpleFile);	
 			
 			
 			

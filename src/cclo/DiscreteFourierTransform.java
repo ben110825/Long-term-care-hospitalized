@@ -660,21 +660,21 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 		}
 		double sum = 0;
 		for (int i = 0; i < FFTNo; i++) {
-			shortVoice[i] = shortVoice[i] * 0.996 + Math.log10(voice[i]) * 0.004;
+			shortVoice[i] = shortVoice[i] * 0.996 + voice[i] * 0.004;
 			sum += shortVoice[i];
-			voiceAvg += Math.log10(voice[i]);
+			voiceAvg += voice[i];
 		}
 		shortVoiceAvg = sum / FFTNo;
 		voiceAvg /= FFTNo;
 //		 System.out.println("short平均 "+shortVoiceAvg);
-//		 System.out.println("平均 "+voiceAvg);
-		if (voiceAvg / shortVoiceAvg > 1.2) {
+//		 System.out.println("平均      "+voiceAvg);
+		if (voiceAvg / shortVoiceAvg > 1.05) {
 			findPeak(voice, true);
+
 		} else {
 			findPeak(voice, false);
 
 		}
-
 	}
 
 	int peakCount = 0;
@@ -688,7 +688,7 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 	int countAmbientSound = 0;
 	final String storedFilePath = "./sound_source/";
 	String storedFileName = "";
-	String loadedFile = "./sound_source/"; // 讀取用路徑檔
+	//String loadedFile = "./sound_source/"; // 讀取用路徑檔
 
 	public void findPeak(double voice[], boolean flag) { // 找出5個特徵 若沒聲音則為0
 		boolean peakIsEmpty = false;
@@ -748,9 +748,8 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 
 		testAmbientSound();
 		if (recordFlag == true) {
-			if (voiceAvg / shortVoiceAvg > 1.2 || hasFirstVoice) { // 有聲音才正式開始記錄
+			if (voiceAvg / shortVoiceAvg > 1.5 || hasFirstVoice) { //啟動門檻
 				hasFirstVoice = true;
-				System.out.println(fivePeak.toString());
 
 				bubbleSort(fivePeak, voice);		
 				if (tempPF.getCountRecord() == 0)
@@ -761,7 +760,7 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 				if (peakIsEmpty) {
 					zeroCount++;
 					System.out.println(zeroCount);
-					if (zeroCount >= 60) {
+					if (zeroCount >= 70) {
 						setRecordFlag(false);
 						setStoredFileName(tempPF.getTime());
 						String st = getStoredFileName();
@@ -771,9 +770,9 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 						}
 						tempPF.setCountRecord(tempPF.getCountRecord()-zeroCount);
 						stoppeakRecord();
-						setLoadedFile(st);
+						//setLoadedFile(st);
 						pMain.freqFr.identificationFile = new PeakFeature();
-						pMain.freqFr.identificationFile= loadFile(); // 讀入辨識檔
+						pMain.freqFr.identificationFile= loadFile(st); // 讀入辨識檔
 						zeroCount = 0; //初始化zeroCount
 						hasFirstVoice = false;
 						System.out.println("錄音停止區塊");
@@ -805,6 +804,7 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 
 	public void testAmbientSound() { 
 		ArrayList<Integer> tempAl = new ArrayList<Integer>();
+		pMain.tFrame.panel.updatePanel(fivePeak);
 		for (int i = 0; i < 5; i++) {
 			tempAl.add(0);
 		}
@@ -816,9 +816,10 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 		if (hasAmbientSound || countAmbientSound < 100) {
 			System.out.println("測試環境音中...");
 		} else {
-			if (countAmbientSound == 105)
+			if (countAmbientSound == 100) {
 				System.out.println("測試完畢");
-			pMain.tFrame.panel.updatePanel(fivePeak);
+			}
+			
 
 		}
 
@@ -869,7 +870,7 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 		}
 	}
 
-	public PeakFeature loadFile() {
+	public PeakFeature loadFile(String loadedFile) {
 		PeakFeature tempLoad = new PeakFeature();
 	//	System.out.println("LoadFile " + loadedFile);
 		Gson gson = new Gson();
@@ -905,13 +906,13 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 		return storedFilePath;
 	}
 
-	public void setLoadedFile(String file) {
-		this.loadedFile = file;
-	}
-
-	public String getLoadedFile() {
-		return loadedFile;
-	}
+//	public void setLoadedFile(String file) {
+//		this.loadedFile = file;
+//	}
+//
+//	public String getLoadedFile() {
+//		return loadedFile;
+//	}
 
 	public boolean getRecordFlag() {
 		return recordFlag;
