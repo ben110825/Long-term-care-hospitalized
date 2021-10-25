@@ -23,6 +23,7 @@ public class IOPan extends JPanel {
     Scorer father;
     JTextField tfLevel = new JTextField();
     JTextField tfError = new JTextField();
+    JTextField tfResult = new JTextField();
     JLabel lbLevel = new JLabel("樣本");
     JLabel lbError = new JLabel("檔案");
     String name[] = {
@@ -32,7 +33,7 @@ public class IOPan extends JPanel {
         "3 Do", "3 Do+", "3 Re", "3 Re+", "3 Mi", "3 Fa", "3 Fa+", "3 Sol", "3 Sol+", "3 La", "3 La+", "3 Si",
         "4 Do", "4 Do+", "4 Re", "4 Re+", "4 Mi", "4 Fa", "4 Fa+", "4 Sol", "4 Sol+", "4 La", "4 La+", "4 Si",
         "5 Do", "5 Do+", "5 Re"};
-    String toneName[] = {"咳嗽", "打鼾", "噴嚏"};
+//    String toneName[] = {"咳嗽", "打鼾", "噴嚏"};
 
     int levCounter[] = new int[100];
     int current;
@@ -40,9 +41,10 @@ public class IOPan extends JPanel {
     int extLev;
     double ratio = 0.0;
     JTextField tfRatio = new JTextField();
-    JLabel lbPerc = new JLabel("狀態");
-    JLabel lbTone = new JLabel("類別");
-    JComboBox cbTone = new JComboBox(toneName);
+    JLabel lbPerc = new JLabel("准确率");
+//    JLabel lbTone = new JLabel("類別");
+    JLabel lbResult = new JLabel("结果");
+//    JComboBox cbTone = new JComboBox(toneName);
     static int mNo = 0;
     int bias = 0;
     public String selectedTone = "B-";
@@ -54,19 +56,20 @@ public class IOPan extends JPanel {
         lbLevel.setFont(new Font("Serif", Font.BOLD, 48));
         lbError.setFont(new Font("Serif", Font.BOLD, 48));
         lbPerc.setFont(new Font("Serif", Font.BOLD, 48));
-        lbTone.setFont(new Font("Serif", Font.BOLD, 48));
         tfLevel.setFont(new Font("Serif", Font.BOLD, 48));
         tfError.setFont(new Font("Serif", Font.BOLD, 48));
         tfRatio.setFont(new Font("Serif", Font.BOLD, 48));
-        cbTone.setFont(new Font("Serif", Font.BOLD, 48));
+        lbResult.setFont(new Font("Serif", Font.BOLD, 48));
+        tfResult.setFont(new Font("Serif", Font.BOLD, 48));
 
         lbLevel.setHorizontalAlignment(JLabel.HORIZONTAL);
         lbError.setHorizontalAlignment(JLabel.HORIZONTAL);
         lbPerc.setHorizontalAlignment(JLabel.HORIZONTAL);
-        lbTone.setHorizontalAlignment(JLabel.HORIZONTAL);
         tfLevel.setHorizontalAlignment(JLabel.HORIZONTAL);
         tfError.setHorizontalAlignment(JLabel.HORIZONTAL);
         tfRatio.setHorizontalAlignment(JLabel.HORIZONTAL);
+        lbResult.setHorizontalAlignment(JLabel.HORIZONTAL);
+        tfResult.setHorizontalAlignment(JLabel.HORIZONTAL);
 
         //ImageIcon levelIcon = new ImageIcon(new ImageIcon("level.png").getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH));
         // lbLevel.setIcon(levelIcon);
@@ -83,46 +86,56 @@ public class IOPan extends JPanel {
         //tfError.setForeground(Color.WHITE);
         add(lbLevel);
         add(tfLevel);
+
         add(lbError);
         add(tfError);
         tfLevel.setEditable(false);
         tfError.setEditable(false);
+        tfResult.setEditable(false);
         lbPerc.setOpaque(true);
         lbPerc.setForeground(Color.WHITE);
         lbPerc.setBackground(new Color(80, 0, 80));
         //tfRatio.setBackground(new Color(80, 0, 80));
-        //tfRatio.setForeground(Color.WHITE);
-        lbTone.setOpaque(true);
-        lbTone.setForeground(Color.WHITE);
-        lbTone.setBackground(new Color(70, 90, 140));
+//        //tfRatio.setForeground(Color.WHITE);
+//        lbTone.setOpaque(true);
+//        lbTone.setForeground(Color.WHITE);
+//        lbTone.setBackground(new Color(70, 90, 140));
+
+        lbResult.setOpaque(true);
+        lbResult.setForeground(Color.WHITE);
+        lbResult.setBackground(new Color(15, 115, 140));
 
         add(lbPerc);
         add(tfRatio);
-        add(lbTone);
-        add(cbTone);
+//
+//        add(lbTone);
+//        add(cbTone);
+
+        add(lbResult);
+        add(tfResult);
 
         // add(tfError);
         tfRatio.setEditable(false);
         tfError.setEditable(false);
 
-        cbTone.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                selectedTone = cbTone.getSelectedItem().toString();
-                switch (selectedTone) {
-                    case "咳嗽":
-                        bias = 0;
-                        break;
-                    case "打鼾":
-                        bias = -5;
-                        break;
-                    case "噴嚏":
-                        bias = -2;
-                        break;
-                }
-                // System.out.println("Selected Tone: " + selectedTone);
-            }
-        });
+//        cbTone.addItemListener(new ItemListener() {
+//            @Override
+//            public void itemStateChanged(ItemEvent e) {
+//                selectedTone = cbTone.getSelectedItem().toString();
+//                switch (selectedTone) {
+//                    case "咳嗽":
+//                        bias = 0;
+//                        break;
+//                    case "打鼾":
+//                        bias = -5;
+//                        break;
+//                    case "噴嚏":
+//                        bias = -2;
+//                        break;
+//                }
+//                // System.out.println("Selected Tone: " + selectedTone);
+//            }
+//        });
 
     }
 
