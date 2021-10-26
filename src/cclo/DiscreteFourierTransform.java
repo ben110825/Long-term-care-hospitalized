@@ -660,15 +660,16 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 		}
 		double sum = 0;
 		for (int i = 0; i < FFTNo; i++) {
-			shortVoice[i] = shortVoice[i] * 0.996 + voice[i] * 0.004;
+			shortVoice[i] = shortVoice[i] * 0.996 + Math.log10(voice[i]) * 0.004;
 			sum += shortVoice[i];
-			voiceAvg += voice[i];
+			voiceAvg += Math.log10(voice[i]);
 		}
 		shortVoiceAvg = sum / FFTNo;
 		voiceAvg /= FFTNo;
 //		System.out.println("short平均 "+shortVoiceAvg);
 //		System.out.println("平均      "+voiceAvg);
 		if (voiceAvg / shortVoiceAvg > 1.05) {
+
 			findPeak(voice, true);
 
 		} else {
@@ -749,6 +750,7 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 		testAmbientSound();
 		if (recordFlag == true) {
 			if (voiceAvg / shortVoiceAvg > 1.5 || hasFirstVoice) { //啟動門檻
+
 				hasFirstVoice = true;
 
 				bubbleSort(fivePeak, voice);		

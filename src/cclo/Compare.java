@@ -53,8 +53,12 @@ public class Compare {
 
 		}
 		
-		if(difference < 30)		//相似
+		if(difference < 10) {		//相似
 			similar = true;
+//			System.out.println("AL1: "+al1);
+//			System.out.println("AL2: "+al2);
+//			System.out.println("Final difference: "+difference);
+		}
 		else					//不相似
 			similar  = false;
 		return similar;

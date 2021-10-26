@@ -24,7 +24,7 @@ public class IOPan extends JPanel {
     JTextField tfSample = new JTextField();				
     JTextField tfIdentification = new JTextField();		//需要辨識的檔案(未知)
     JTextField tfResult = new JTextField();
-    JLabel lbSample = new JLabel("<html><body>樣本檔案<br><center>(已知)<center><body></html>");
+    JLabel lbSample = new JLabel("<html><body>樣本資料夾<br><center>(已知)<center><body></html>");
     JLabel lbFile   = new JLabel("<html><body>錄音檔案<br><center>(未知)<center><body></html>");
     String name[] = {
         "0 Do", "0 Do+", "0 Re", "0 Re+", "0 Mi", "0 Fa", "0 Fa+", "0 Sol", "0 Sol+", "0 La", "0 La+", "0 Si",
@@ -41,7 +41,7 @@ public class IOPan extends JPanel {
     int extLev;
     double ratio = 0.0;
     JTextField tfAcc = new JTextField();
-    JLabel lbAcc = new JLabel("準確率");
+    JLabel lbAcc = new JLabel("最高相似度");
 //    JLabel lbTone = new JLabel("類別");
     JLabel lbResult = new JLabel("結果");
 //    JComboBox cbTone = new JComboBox(toneName);
@@ -53,14 +53,14 @@ public class IOPan extends JPanel {
         main = main_;
 
         this.setLayout(new GridLayout(1, 8, 5, 5));
-        lbSample.setFont(new Font("Serif", Font.BOLD, 36));
-        lbFile.setFont(new Font("Serif", Font.BOLD, 36));
-        lbAcc.setFont(new Font("Serif", Font.BOLD, 48));
-        tfSample.setFont(new Font("Serif", Font.BOLD, 16));
-        tfIdentification.setFont(new Font("Serif", Font.BOLD, 16));
-        tfAcc.setFont(new Font("Serif", Font.BOLD, 48));
-        lbResult.setFont(new Font("Serif", Font.BOLD, 48));
-        tfResult.setFont(new Font("Serif", Font.BOLD, 48));
+        lbSample.setFont(new Font("標楷體", Font.BOLD, 24));
+        lbFile.setFont(new Font("標楷體", Font.BOLD, 24));
+        lbAcc.setFont(new Font("標楷體", Font.BOLD, 24));
+        tfSample.setFont(new Font("標楷體", Font.BOLD, 16));
+        tfIdentification.setFont(new Font("標楷體", Font.BOLD, 16));
+        tfAcc.setFont(new Font("標楷體", Font.BOLD, 24));
+        lbResult.setFont(new Font("標楷體", Font.BOLD, 24));
+        tfResult.setFont(new Font("標楷體", Font.BOLD, 24));
 
         lbSample.setHorizontalAlignment(JLabel.HORIZONTAL);
         lbFile.setHorizontalAlignment(JLabel.HORIZONTAL);
@@ -96,7 +96,7 @@ public class IOPan extends JPanel {
         lbAcc.setForeground(Color.WHITE);
         lbAcc.setBackground(new Color(80, 0, 80));
         //tfAcc.setBackground(new Color(80, 0, 80));
-//        //tfAcc.setForeground(Color.WHITE);
+//        tfAcc.setForeground(Color.WHITE);
 //        lbTone.setOpaque(true);
 //        lbTone.setForeground(Color.WHITE);
 //        lbTone.setBackground(new Color(70, 90, 140));
