@@ -749,7 +749,7 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 
 		testAmbientSound();
 		if (recordFlag == true) {
-			if (voiceAvg / shortVoiceAvg > 1.5 || hasFirstVoice) { //啟動門檻
+			if (voiceAvg / shortVoiceAvg > 1.3 || hasFirstVoice) { //啟動門檻
 
 				hasFirstVoice = true;
 
@@ -764,19 +764,21 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 					System.out.println(zeroCount);
 					if (zeroCount >= 70) {
 						setRecordFlag(false);
-						setStoredFileName(tempPF.getTime());
+						setStoredFileName(tempPF.getTime(), tempPF.type);
 						String st = getStoredFileName();
 						int tempCount = tempPF.getCountRecord() - 1;
 						for (int i = tempCount; i > tempCount - zeroCount; i--) {
 							tempPF.getPeak().remove(i);
 						}
 						tempPF.setCountRecord(tempPF.getCountRecord()-zeroCount);
-						stoppeakRecord();
-						pMain.freqFr.identificationFile = new PeakFeature();
-						pMain.freqFr.identificationFile= loadFile(st); // 讀入辨識檔
+						
+						pMain.freqFr.identificationFile = tempPF;
+						//pMain.freqFr.identificationFile = loadFile(st); // 讀入辨識檔
 						pMain.ioPan.tfIdentification.setText(st);	//目前先使用路徑+檔名
 						zeroCount = 0; //初始化zeroCount
 						hasFirstVoice = false;
+						recordFlag = false;
+						stoppeakRecord(storedFileName);
 						System.out.println("錄音停止區塊");
 
 						
@@ -788,7 +790,7 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 			}
 		}
 		else if (recordFlag == false && tempPF.getCountRecord() != 0) {	//把後面的0消除
-			System.out.println("zeroCount"+zeroCount);
+			//System.out.println("zeroCount"+zeroCount);
 			int tempCount = tempPF.getCountRecord() - 1;
 			for (int i = tempCount; i > tempCount - zeroCount; i--) {
 				tempPF.getPeak().remove(i);
@@ -797,8 +799,8 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 			tempPF.setCountRecord(tempPF.getCountRecord()-zeroCount);
 			System.out.println(tempPF.getCountRecord());
 			System.out.println("錄音停止區塊");
-
-			stoppeakRecord();
+			pMain.freqFr.identificationFile = tempPF;
+			stoppeakRecord(storedFileName);
 			hasFirstVoice = false;
 
 		}
@@ -851,25 +853,27 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 	 * (IOException e) { // TODO Auto-generated catch block e.printStackTrace(); } }
 	 */
 	public void startpeakRecord() {
+		//tempPF = new PeakFeature();
 		Date date = new Date();
 		SimpleDateFormat myFmt = new SimpleDateFormat("yyyy_MM_dd HH_mm_ss");
 		tempPF.setTime(myFmt.format(date));
 	}
 
-	public void stoppeakRecord() {
-		try {
-		//	System.out.println("storedFileName " + storedFileName);
-			File dir_file = new File(storedFileName);
-			dir_file.createNewFile();
-			BufferedWriter buw = new BufferedWriter(new FileWriter(storedFileName));
-			buw.write(tempPF.gsonout());
-			buw.close();
-			System.out.println("儲存完畢");
-			tempPF = new PeakFeature();
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+	public void stoppeakRecord(String storedFileName) {
+//		try {
+//		//	System.out.println("storedFileName " + storedFileName);
+////			File dir_file = new File(storedFileName);
+////			dir_file.createNewFile();
+////			BufferedWriter buw = new BufferedWriter(new FileWriter(storedFileName));
+////			buw.write(tempPF.gsonout());
+////			buw.close();
+////			System.out.println("儲存完畢");
+//			tempPF = new PeakFeature();
+//		} catch (IOException e1) {
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//		}
+		tempPF = new PeakFeature();
 	}
 
 	public PeakFeature loadFile(String loadedFile) {
@@ -896,8 +900,8 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 		pMain = aed_;
 	}
 
-	public void setStoredFileName(String file) {
-		this.storedFileName = storedFilePath + file + "_Test" + ".json";
+	public void setStoredFileName(String file, FeatureType Type) {
+		this.storedFileName = storedFilePath + file + "_" +Type +".json";
 	}
 
 	public String getStoredFileName() {

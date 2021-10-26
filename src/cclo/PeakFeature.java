@@ -18,7 +18,7 @@ public class PeakFeature {
 	FeatureType type;
 	
 	PeakFeature() {
-		this.type = FeatureType.未辨識;
+		this.type = FeatureType.Unidentified;
 		this.countRecord = 0;
 		this.similarity = 0;
 	}
@@ -33,12 +33,12 @@ public class PeakFeature {
 	PeakFeature(ArrayList<ArrayList<Integer>> peak) {
 		
 		this.peak = peak;
-		this.type = FeatureType.未辨識;		// 用這個建構子
+		this.type = FeatureType.Unidentified;		// 用這個建構子
 
 	} 
 	protected void analize(PeakFeature simpleFile){
 
-		FeatureType resultType = FeatureType.未辨識;
+		FeatureType resultType = FeatureType.Unidentified;
 		double lengthRatio = (double)simpleFile.getCountRecord()/(double)this.getCountRecord(); //長度比例
 		System.out.println("simple length: "+simpleFile.getCountRecord());
 		System.out.println("identification length: "+this.getCountRecord());

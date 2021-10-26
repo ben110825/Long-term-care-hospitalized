@@ -48,7 +48,7 @@ public class SpecLineChart extends JFrame implements ActionListener, KeyListener
 	XYSeries series1;
 	Main main;
 	JButton startRecordingButton, stopRecordingButton, clearButton, loadFileButton, compareButton;
-	String LoadFileName[] ; // 所有讀進來的檔案名稱
+	String LoadFileName[]; // 所有讀進來的檔案名稱
 	// final ChartPanel chartPanel;
 	public static JTextField jtf1; // 類別输入框
 
@@ -230,16 +230,15 @@ public class SpecLineChart extends JFrame implements ActionListener, KeyListener
 			}
 
 		} else if (e.getSource() == stopRecordingButton) { // 暫停錄音並把此聲音讀入程式
-		
 
 			if (main.dff.getRecordFlag()) {
 				main.dff.setRecordFlag(false);
-				main.dff.setStoredFileName(main.dff.tempPF.getTime());
-				String st = main.dff.getStoredFileName();
-				JOptionPane.showMessageDialog(this, "存至:" + st);
+				main.dff.setStoredFileName(main.dff.tempPF.getTime(), main.dff.tempPF.type);
+				// String st = main.dff.getStoredFileName();
+				// JOptionPane.showMessageDialog(this, "存至:" + st);
 				// main.dff.setLoadedFile(st); // LoadedFile儲存路徑變數可以不用,可以直接包在 function loadFile裡
-				identificationFile = new PeakFeature();
-				identificationFile = main.dff.loadFile(st); // 讀入辨識檔
+				// identificationFile = new PeakFeature();
+				// identificationFile = main.dff.loadFile(st); // 讀入辨識檔
 
 			} else {
 				JOptionPane.showMessageDialog(this, "未錄音");
@@ -249,16 +248,16 @@ public class SpecLineChart extends JFrame implements ActionListener, KeyListener
 			JOptionPane.showMessageDialog(this, "請選擇要讀取的檔案資料夾");
 			try {
 				JFileChooser chooser = new JFileChooser();
-				chooser.setCurrentDirectory(new File("./sound_source"));    // 設定初始資料夾
+				chooser.setCurrentDirectory(new File("./sound_source")); // 設定初始資料夾
 				chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);// 設定只讀取資料夾
 				int returnValue = chooser.showOpenDialog(null);
-				
+
 				File folder = new File(chooser.getSelectedFile().getAbsolutePath());
-				
+
 				main.ioPan.tfSample.setText(chooser.getSelectedFile().getName());
 
 				int i = 0;
-				for (File file : folder.listFiles()) {	//讀取每個檔名
+				for (File file : folder.listFiles()) { // 讀取每個檔名
 					if (!file.isDirectory()) {
 						// System.out.println(file.getPath());
 						LoadFileName[i++] = file.getPath();
@@ -266,12 +265,11 @@ public class SpecLineChart extends JFrame implements ActionListener, KeyListener
 
 					}
 				}
-				
+
+			} catch (NullPointerException exception) {
+
 			}
-			catch(NullPointerException exception) {
-				
-			}
-			
+
 //			JFileChooser chooser = new JFileChooser();
 //			chooser.setCurrentDirectory(new File("./sound_source"));
 //			int returnValue = chooser.showOpenDialog(null);
@@ -293,47 +291,61 @@ public class SpecLineChart extends JFrame implements ActionListener, KeyListener
 			main.ioPan.tfSample.setText("");
 			main.ioPan.tfAcc.setText("");
 			main.ioPan.tfResult.setText("");
-			identificationFile = new PeakFeature();
+			main.dff.tempPF = new PeakFeature();
 			sampleFile = new PeakFeature();
 		} else if (e.getSource() == compareButton && !identificationFile.getPeak().isEmpty()) {// 比對功能未完成
 			// FeatureType resultType = FeatureType.未辨識;
+			System.out.println(identificationFile.getPeak());
 			int i = 0;
 			int maxSimilarity = 0; // 最高相似度
+			boolean flag = false;
+			String maxSimilarityLocation = "";
 			while (LoadFileName[i] != null) {
 				sampleFile = new PeakFeature();
 				sampleFile = main.dff.loadFile(LoadFileName[i]); // 讀入樣本檔
-				//System.out.println(i);
+				// System.out.println(i);
 				double lengthRatio = (double) sampleFile.getCountRecord()
 						/ (double) identificationFile.getCountRecord(); // 長度比例
-				if(lengthRatio > 1.1 || lengthRatio<0.9) {
-//					System.out.println("長度相差過大");
-//					i++;
-//					continue;
-					
+				if (lengthRatio > 1.3 || lengthRatio < 0.7) {
+					System.out.println("長度相差過大");
+					System.out.println("============================");
+					i++;
+					if (LoadFileName[i] == null)
+						continue;
+
 				}
 
 				int resultFromLCS = Compare.lcs(sampleFile, identificationFile);
 				int acc = (int) (100 * ((double) resultFromLCS / (double) sampleFile.getCountRecord()));
+				System.out.println("辨識檔案總數: " + identificationFile.getCountRecord());
+				System.out.println("辨識檔案相似度: "
+						+ 100 * ((double) resultFromLCS / (double) identificationFile.getCountRecord()) + " %");
 
 				System.out.println("樣本種類: " + sampleFile.getType());
+				System.out.println("樣本檔案總數: " + sampleFile.getCountRecord());
 				System.out.println("辨識種類: " + identificationFile.getType());
 				System.out.println("LCS結果: " + resultFromLCS);
 				System.out.println("樣本檔案相似度: " + acc + " %");
 				System.out.println("============================");
 				if (acc > maxSimilarity) { // 紀錄最像的
+					flag = true;
 					maxSimilarity = acc;
+					maxSimilarityLocation = LoadFileName[i];
 				}
-				if ((double) resultFromLCS / (double) sampleFile.getCountRecord() > 0.6)
-					identificationFile.setType(sampleFile.getType()); // 改變type
+//				if ((double) resultFromLCS / (double) sampleFile.getCountRecord() > 0.6)
+//					identificationFile.setType(sampleFile.getType()); // 改變type
 
 				i++;
 			}
-			main.ioPan.tfAcc.setText(maxSimilarity + "%");
-			main.ioPan.tfResult.setText(maxSimilarity > 60 ? identificationFile.getType() + "" : "-1");
-			if (maxSimilarity > 60) {	//把type存回檔案
+			if (flag)
+				sampleFile = main.dff.loadFile(maxSimilarityLocation);
+			// main.dff.tempPF.setType(sampleFile.getType());
+			if (maxSimilarity > 60) { // 把type存回檔案
+				identificationFile.setType(sampleFile.getType());
 				try {
 					// System.out.println("storedFileName " + storedFileName);
-					String st = main.ioPan.tfIdentification.getText();
+					main.dff.setStoredFileName(identificationFile.getTime(), identificationFile.type);
+					String st = main.dff.getStoredFileName();
 					File dir_file = new File(st);
 					dir_file.createNewFile();
 					BufferedWriter buw = new BufferedWriter(new FileWriter(st));
@@ -345,7 +357,26 @@ public class SpecLineChart extends JFrame implements ActionListener, KeyListener
 					e1.printStackTrace();
 				}
 
+			} else {
+				main.dff.setStoredFileName(identificationFile.getTime(), identificationFile.type);
+				String st = main.dff.getStoredFileName();
+				File dir_file = new File(st);
+				try {
+					dir_file.createNewFile();
+					BufferedWriter buw = new BufferedWriter(new FileWriter(st));
+					buw.write(identificationFile.gsonout());
+					buw.close();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+
+				System.out.println("儲存完畢" + st);
+
 			}
+			main.ioPan.tfAcc.setText(maxSimilarity + "%");
+			main.ioPan.tfResult.setText(maxSimilarity > 60 ? identificationFile.getType() + "" : "-1");
+
 		}
 	}
 	// main.ioPan.tfAcc.setText(maxSimilarity+" %");

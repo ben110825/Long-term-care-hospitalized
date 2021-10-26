@@ -1,5 +1,5 @@
 package cclo;
 
 public enum FeatureType {
-	Sneeze,Cough,Snore,未辨識,test;
+	Sneeze,Cough,Snore,Unidentified;
 }
