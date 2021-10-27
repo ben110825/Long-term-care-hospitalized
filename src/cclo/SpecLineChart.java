@@ -339,41 +339,28 @@ public class SpecLineChart extends JFrame implements ActionListener, KeyListener
 			}
 			if (flag)
 				sampleFile = main.dff.loadFile(maxSimilarityLocation);
-			// main.dff.tempPF.setType(sampleFile.getType());
+			// 	main.dff.tempPF.setType(sampleFile.getType());
 			if (maxSimilarity > 60) { // 把type存回檔案
 				identificationFile.setType(sampleFile.getType());
-				try {
-					// System.out.println("storedFileName " + storedFileName);
-					main.dff.setStoredFileName(identificationFile.getTime(), identificationFile.type);
-					String st = main.dff.getStoredFileName();
-					File dir_file = new File(st);
-					dir_file.createNewFile();
-					BufferedWriter buw = new BufferedWriter(new FileWriter(st));
-					buw.write(identificationFile.gsonout());
-					buw.close();
-					System.out.println("儲存完畢" + st);
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-
-			} else {
+			} 
+			try {
+				// System.out.println("storedFileName " + storedFileName);
+				main.dff.setStoredFilePath("sound_source/identification_"+identificationFile.type+"/");
 				main.dff.setStoredFileName(identificationFile.getTime(), identificationFile.type);
+				
 				String st = main.dff.getStoredFileName();
+				System.out.println(st);
 				File dir_file = new File(st);
-				try {
-					dir_file.createNewFile();
-					BufferedWriter buw = new BufferedWriter(new FileWriter(st));
-					buw.write(identificationFile.gsonout());
-					buw.close();
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-
+				dir_file.createNewFile();
+				BufferedWriter buw = new BufferedWriter(new FileWriter(st));
+				buw.write(identificationFile.gsonout());
+				buw.close();
 				System.out.println("儲存完畢" + st);
-
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
 			}
+				
 			main.ioPan.tfAcc.setText(maxSimilarity + "%");
 			main.ioPan.tfResult.setText(maxSimilarity > 60 ? identificationFile.getType() + "" : "-1");
 

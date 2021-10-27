@@ -687,7 +687,7 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 	boolean hasFirstVoice = false;
 	boolean hasAmbientSound = true;
 	int countAmbientSound = 0;
-	final String storedFilePath = "./sound_source/";
+	String storedFilePath = "./sound_source/";
 	String storedFileName = "";
 	//String loadedFile = "./sound_source/"; // 讀取用路徑檔
 
@@ -764,6 +764,7 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 					System.out.println(zeroCount);
 					if (zeroCount >= 70) {
 						setRecordFlag(false);
+						//tempPF.setType(FeatureType.Cough);		//這邊是用來錄製樣本檔案使用
 						setStoredFileName(tempPF.getTime(), tempPF.type);
 						String st = getStoredFileName();
 						int tempCount = tempPF.getCountRecord() - 1;
@@ -862,12 +863,12 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 	public void stoppeakRecord(String storedFileName) {
 //		try {
 //		//	System.out.println("storedFileName " + storedFileName);
-////			File dir_file = new File(storedFileName);
-////			dir_file.createNewFile();
-////			BufferedWriter buw = new BufferedWriter(new FileWriter(storedFileName));
-////			buw.write(tempPF.gsonout());
-////			buw.close();
-////			System.out.println("儲存完畢");
+//			File dir_file = new File(storedFileName);
+//			dir_file.createNewFile();
+//			BufferedWriter buw = new BufferedWriter(new FileWriter(storedFileName));
+//			buw.write(tempPF.gsonout());
+//			buw.close();
+//			System.out.println("儲存完畢");
 //			tempPF = new PeakFeature();
 //		} catch (IOException e1) {
 //			// TODO Auto-generated catch block
@@ -910,6 +911,11 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 
 	protected String getStoredFilePath() {
 		return storedFilePath;
+	}
+	protected void setStoredFilePath(String storedFilePath) {
+		this.storedFilePath = storedFilePath;
+		
+		
 	}
 
 //	public void setLoadedFile(String file) {

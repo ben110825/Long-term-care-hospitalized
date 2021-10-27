@@ -114,7 +114,7 @@ public class Main implements Share {
             //start the microphone or exit if the programm if this is not possible
             if (!aed.mic.startRecording()) {
                 System.out.println("Cannot start microphone.");
-        System.exit(1);
+                System.exit(1);
     }
 
             while (true) {
