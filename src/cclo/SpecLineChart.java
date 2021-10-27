@@ -49,6 +49,7 @@ public class SpecLineChart extends JFrame implements ActionListener, KeyListener
 	Main main;
 	JButton startRecordingButton, stopRecordingButton, clearButton, loadFileButton, compareButton;
 	String LoadFileName[]; // 所有讀進來的檔案名稱
+	boolean flag = false;
 	// final ChartPanel chartPanel;
 	public static JTextField jtf1; // 類別输入框
 
@@ -214,7 +215,7 @@ public class SpecLineChart extends JFrame implements ActionListener, KeyListener
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if (e.getSource() == startRecordingButton) {
+		if (e.getSource() == startRecordingButton && !main.dff.testAmbientSoundFlag) {
 			if (main.dff.getRecordFlag()) {
 				JOptionPane.showMessageDialog(this, "錄音中");
 			} else {
@@ -229,11 +230,16 @@ public class SpecLineChart extends JFrame implements ActionListener, KeyListener
 				JOptionPane.showMessageDialog(this, "開始錄音");
 			}
 
-		} else if (e.getSource() == stopRecordingButton) { // 暫停錄音並把此聲音讀入程式
+		}else if(main.dff.testAmbientSoundFlag){
+			JOptionPane.showMessageDialog(this, "測試環境音中!!","warning",JOptionPane.WARNING_MESSAGE);
+		}
+		else if (e.getSource() == stopRecordingButton) { // 暫停錄音並把此聲音讀入程式
 
 			if (main.dff.getRecordFlag()) {
 				main.dff.setRecordFlag(false);
 				main.dff.setStoredFileName(main.dff.tempPF.getTime(), main.dff.tempPF.type);
+				System.out.println(main.dff.getStoredFileName());
+				main.ioPan.tfIdentification.setText("辨識檔已準備");
 				// String st = main.dff.getStoredFileName();
 				// JOptionPane.showMessageDialog(this, "存至:" + st);
 				// main.dff.setLoadedFile(st); // LoadedFile儲存路徑變數可以不用,可以直接包在 function loadFile裡
@@ -251,20 +257,24 @@ public class SpecLineChart extends JFrame implements ActionListener, KeyListener
 				chooser.setCurrentDirectory(new File("./sound_source")); // 設定初始資料夾
 				chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);// 設定只讀取資料夾
 				int returnValue = chooser.showOpenDialog(null);
+				if(returnValue == JFileChooser.APPROVE_OPTION) {
+					flag = true;
+					File folder = new File(chooser.getSelectedFile().getAbsolutePath());
 
-				File folder = new File(chooser.getSelectedFile().getAbsolutePath());
+					main.ioPan.tfSample.setText(chooser.getSelectedFile().getName());
 
-				main.ioPan.tfSample.setText(chooser.getSelectedFile().getName());
+					int i = 0;
+					for (File file : folder.listFiles()) { // 讀取每個檔名
+						if (!file.isDirectory()) {
+							// System.out.println(file.getPath());
+							LoadFileName[i++] = file.getPath();
+							System.out.println(file.getPath());
 
-				int i = 0;
-				for (File file : folder.listFiles()) { // 讀取每個檔名
-					if (!file.isDirectory()) {
-						// System.out.println(file.getPath());
-						LoadFileName[i++] = file.getPath();
-						System.out.println(file.getPath());
-
+						}
 					}
 				}
+
+				
 
 			} catch (NullPointerException exception) {
 
@@ -293,7 +303,9 @@ public class SpecLineChart extends JFrame implements ActionListener, KeyListener
 			main.ioPan.tfResult.setText("");
 			main.dff.tempPF = new PeakFeature();
 			sampleFile = new PeakFeature();
-		} else if (e.getSource() == compareButton && !identificationFile.getPeak().isEmpty()) {// 比對功能未完成
+			identificationFile = new PeakFeature();
+			flag = false;
+		} else if (e.getSource() == compareButton && identificationFile != null && flag) {// 比對功能未完成
 			// FeatureType resultType = FeatureType.未辨識;
 			System.out.println(identificationFile.getPeak());
 			int i = 0;
@@ -365,8 +377,10 @@ public class SpecLineChart extends JFrame implements ActionListener, KeyListener
 			main.ioPan.tfResult.setText(maxSimilarity > 60 ? identificationFile.getType() + "" : "-1");
 
 		}
+		else
+			JOptionPane.showMessageDialog(this,"尚未載入樣本檔案或辨識檔案，無法比對");
 	}
-	// main.ioPan.tfAcc.setText(maxSimilarity+" %");
+//	 main.ioPan.tfAcc.setText(maxSimilarity+" %");
 
 //			double lengthRatio = (double)sampleFile.getCountRecord()/(double)identificationFile.getCountRecord(); //長度比例
 //			System.out.println("simple length: "+sampleFile.getCountRecord());

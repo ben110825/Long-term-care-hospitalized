@@ -686,6 +686,7 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 	boolean recordFlag = false;
 	boolean hasFirstVoice = false;
 	boolean hasAmbientSound = true;
+	boolean testAmbientSoundFlag = true;
 	int countAmbientSound = 0;
 	String storedFilePath = "./sound_source/";
 	String storedFileName = "";
@@ -746,8 +747,11 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 				peakIsEmpty = true;
 			}
 		}
-
-		testAmbientSound();
+	//	System.out.println(pMain.freqFr.identificationFile);
+		if(testAmbientSoundFlag)
+			testAmbientSound();
+		
+		pMain.tFrame.panel.updatePanel(fivePeak);
 		if (recordFlag == true) {
 			if (voiceAvg / shortVoiceAvg > 1.3 || hasFirstVoice) { //啟動門檻
 
@@ -775,7 +779,7 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 						
 						pMain.freqFr.identificationFile = tempPF;
 						//pMain.freqFr.identificationFile = loadFile(st); // 讀入辨識檔
-						pMain.ioPan.tfIdentification.setText(st);	//目前先使用路徑+檔名
+						pMain.ioPan.tfIdentification.setText("辨識檔已準備");	//目前先使用路徑+檔名
 						zeroCount = 0; //初始化zeroCount
 						hasFirstVoice = false;
 						recordFlag = false;
@@ -809,7 +813,6 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 
 	public void testAmbientSound() { 
 		ArrayList<Integer> tempAl = new ArrayList<Integer>();
-		pMain.tFrame.panel.updatePanel(fivePeak);
 		for (int i = 0; i < 5; i++) {
 			tempAl.add(0);
 		}
@@ -823,6 +826,8 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 		} else {
 			if (countAmbientSound == 200) {
 				System.out.println("測試完畢");
+				testAmbientSoundFlag = false;
+
 			}
 			
 
