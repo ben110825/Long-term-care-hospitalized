@@ -750,6 +750,8 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 	//	System.out.println(pMain.freqFr.identificationFile);
 		if(testAmbientSoundFlag)
 			testAmbientSound();
+		else
+			recordFlag = true;
 		
 		pMain.tFrame.panel.updatePanel(fivePeak);
 		if (recordFlag == true) {

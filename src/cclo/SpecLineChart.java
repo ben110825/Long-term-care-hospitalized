@@ -75,29 +75,29 @@ public class SpecLineChart extends JFrame implements ActionListener, KeyListener
 		h1Pan.add(main.ioPan);
 		JPanel q2Pan = new JPanel();
 		q2Pan.setLayout(new GridLayout(2, 5, 5, 5));
-		startRecordingButton = new JButton("開始錄音");
-		startRecordingButton.setFont(new Font("標楷體", Font.BOLD, 40));
-		startRecordingButton.addActionListener(this);
-		q2Pan.add(startRecordingButton);
-		stopRecordingButton = new JButton("停止錄音");
-		stopRecordingButton.setFont(new Font("標楷體", Font.BOLD, 40));
-		stopRecordingButton.addActionListener(this);
-		q2Pan.add(stopRecordingButton);
-		clearButton = new JButton("清空檔案");
-		clearButton.setFont(new Font("標楷體", Font.BOLD, 40));
-		clearButton.addActionListener(this);
-		q2Pan.add(clearButton);
-		loadFileButton = new JButton("載樣本檔");
-		loadFileButton.setFont(new Font("標楷體", Font.BOLD, 40));
-		loadFileButton.addActionListener(this);
-		q2Pan.add(loadFileButton);
+//		startRecordingButton = new JButton("開始錄音");
+//		startRecordingButton.setFont(new Font("標楷體", Font.BOLD, 40));
+//		startRecordingButton.addActionListener(this);
+//		q2Pan.add(startRecordingButton);
+//		stopRecordingButton = new JButton("停止錄音");
+//		stopRecordingButton.setFont(new Font("標楷體", Font.BOLD, 40));
+//		stopRecordingButton.addActionListener(this);
+//		q2Pan.add(stopRecordingButton);
+//		clearButton = new JButton("清空檔案");
+//		clearButton.setFont(new Font("標楷體", Font.BOLD, 40));
+//		clearButton.addActionListener(this);
+//		q2Pan.add(clearButton);
+//		loadFileButton = new JButton("載樣本檔");
+//		loadFileButton.setFont(new Font("標楷體", Font.BOLD, 40));
+//		loadFileButton.addActionListener(this);
+//		q2Pan.add(loadFileButton);
 		compareButton = new JButton("進行辨識");
 		compareButton.setFont(new Font("標楷體", Font.BOLD, 40));
 		compareButton.addActionListener(this);
 		q2Pan.add(compareButton);
-		jtf1 = new JTextField("");// 類別輸入框
-		jtf1.setFont(new Font("標楷體", Font.BOLD, 40));
-		q2Pan.add(jtf1);
+//		jtf1 = new JTextField("");// 類別輸入框
+//		jtf1.setFont(new Font("標楷體", Font.BOLD, 40));
+//		q2Pan.add(jtf1);
 
 //        q2Pan.add(main.levName);
 //        q2Pan.add(main.arrowPan);
@@ -305,10 +305,24 @@ public class SpecLineChart extends JFrame implements ActionListener, KeyListener
 			sampleFile = new PeakFeature();
 			identificationFile = new PeakFeature();
 			flag = false;
-		} else if (e.getSource() == compareButton && identificationFile != null && flag) {// 比對功能未完成
-			// FeatureType resultType = FeatureType.未辨識;
-			System.out.println(identificationFile.getPeak());
+		} else if (e.getSource() == compareButton && identificationFile != null ) {
+			LoadFileName = new String[100];
+			String compareFolder = "./sound_source/test";
+			File folder = new File(compareFolder);
+
+			main.ioPan.tfSample.setText(compareFolder);
+
 			int i = 0;
+			for (File file : folder.listFiles()) { // 讀取每個檔名
+				if (!file.isDirectory()) {
+					// System.out.println(file.getPath());
+					LoadFileName[i++] = file.getPath();
+					System.out.println(file.getPath());
+
+				}
+			}
+			System.out.println(identificationFile.getPeak());
+			i = 0;
 			int maxSimilarity = 0; // 最高相似度
 			boolean flag = false;
 			String maxSimilarityLocation = "";
