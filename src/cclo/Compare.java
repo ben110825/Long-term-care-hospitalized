@@ -1,27 +1,24 @@
 package cclo;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Reader;
 import java.util.ArrayList;
-
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
+import com.google.gson.Gson;
 
 public class Compare {
-	public PeakFeature simpleFile;
-	public PeakFeature identificationFile;
-	public PeakFeature getSimpleFile() {
-		return simpleFile;
-	}
-	public void setSimpleFile(PeakFeature simpleFile) {
-		this.simpleFile = simpleFile;
-	}
-	
-	public PeakFeature getIdentificationFile() {
-		return identificationFile;
-	}
-	public void setIdentificationFile(PeakFeature identificationFile) {
+	Compare(PeakFeature identificationFile){
 		this.identificationFile = identificationFile;
+		String compareFolder = "./sound_source/test";	//讀取sample路徑
+		loadFilePath(compareFolder);
+		compare();
 	}
+	public PeakFeature sampleFile;
+	public PeakFeature identificationFile;
+	String LoadFileName[];
 	public static boolean compareFile(ArrayList<Integer> al1, ArrayList<Integer> al2) {
 		int difference = 0;
 		boolean similar;
@@ -63,8 +60,8 @@ public class Compare {
 			similar  = false;
 		return similar;
 	}
-	public static int lcs(PeakFeature simple, PeakFeature identification ) {  
-		ArrayList<ArrayList<Integer>> al1 = simple.getPeak(); 
+	public static int lcs(PeakFeature sample, PeakFeature identification ) {  
+		ArrayList<ArrayList<Integer>> al1 = sample.getPeak(); 
 		ArrayList<ArrayList<Integer>> al2 = identification.getPeak(); 
 		
 	//	System.out.println(al1);
@@ -86,21 +83,94 @@ public class Compare {
 	    }  
 	    return c[len1][len2];  
 	} 
-	public void loadfile()
-	{
-		/*
-		JFileChooser chooser = new JFileChooser();
-		chooser.setCurrentDirectory(new File("./"));
-		int returnValue = chooser.showOpenDialog(null); 
-		String st = chooser.getSelectedFile().getAbsolutePath();
-		//JOptionPane.showMessageDialog(this,"讀取至:"+st);
-		main.dff.setLoadedFile(st);
-		setSimpleFile(new PeakFeature());
-		simpleFile = main.dff.loadFile();		//讀入樣本檔
-		hasLoadFile = true;
-		*/
-		
+	public void loadFilePath(String compareFolder){	//讀取資料夾中的檔名
+		LoadFileName = new String[1000];
+		File folder = new File(compareFolder);
+		int i = 0;
+		for (File file : folder.listFiles()) { 
+			if (!file.isDirectory()) {
+				LoadFileName[i++] = file.getPath();
+				System.out.println(file.getPath());
+			}
+		}
 		
 	}
+	public PeakFeature loadFile(String st) {	//讀取檔案轉為PeakFeature
+		PeakFeature tempLoad = new PeakFeature();
+			Gson gson = new Gson();
+			try (Reader reader = new FileReader(st)) {
+				// Convert JSON File to Java Object
+				tempLoad = gson.fromJson(reader, PeakFeature.class);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+			return tempLoad;
+	}
+	public void compare() {		
+		int i = 0;
+		int maxSimilarity = 0; // 最高相似度
+		boolean flag = false;
+		String maxSimilarityLocation = "";
+		while (LoadFileName[i] != null) {
+			sampleFile = new PeakFeature();
+			sampleFile = loadFile(LoadFileName[i]); // 讀入樣本檔
+			double lengthRatio = (double) sampleFile.getCountRecord()
+					/ (double) identificationFile.getCountRecord(); // 長度比例
+			if (lengthRatio > 1.3 || lengthRatio < 0.7) {
+				System.out.println("長度相差過大");
+				System.out.println("============================");
+				i++;
+				if (LoadFileName[i] == null)
+					continue;
+
+			}
+
+			int resultFromLCS = Compare.lcs(sampleFile, identificationFile);
+			int acc = (int) (100 * ((double) resultFromLCS / (double) sampleFile.getCountRecord()));
+			System.out.println("辨識檔案總數: " + identificationFile.getCountRecord());
+			System.out.println("辨識檔案相似度: "
+					+ 100 * ((double) resultFromLCS / (double) identificationFile.getCountRecord()) + " %");
+
+			System.out.println("樣本種類: " + sampleFile.getType());
+			System.out.println("樣本檔案總數: " + sampleFile.getCountRecord());
+			System.out.println("辨識種類: " + identificationFile.getType());
+			System.out.println("LCS結果: " + resultFromLCS);
+			System.out.println("樣本檔案相似度: " + acc + " %");
+			System.out.println("============================");
+			if (acc > maxSimilarity) { // 紀錄最像的
+				flag = true;
+				maxSimilarity = acc;
+				maxSimilarityLocation = LoadFileName[i];
+			}
+			i++;
+		}
+		classify(maxSimilarity);
+		storeResult();
+		
+	}
+	public void classify(int maxSimilarity) {	//分類
+		if(maxSimilarity >= 60)
+			identificationFile.setType(sampleFile.getType());
+	}
+	public void storeResult() {	//儲存結果
+		try{
+			String st = "sound_source/identification_"+identificationFile.type+"/"+setStoredFileName(identificationFile.getTime(), identificationFile.type);
+			File dir_file = new File(st);
+			dir_file.createNewFile();
+			BufferedWriter buw = new BufferedWriter(new FileWriter(st));
+			buw.write(identificationFile.gsonout());
+			buw.close();
+			System.out.println("儲存完畢 " + st);
+		}
+		catch(IOException e) {
+			
+		}
+		
+	}
+	public String setStoredFileName(String file, FeatureType Type) {
+		 return file + "_" +Type +".json";
+	}
 }
+
 

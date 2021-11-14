@@ -41,7 +41,6 @@ import org.jfree.ui.RefineryUtilities;
  *
  */
 public class SpecLineChart extends JFrame implements ActionListener, KeyListener {
-
 	final int FFTNo = 1024;
 	PeakFeature sampleFile;
 	PeakFeature identificationFile;
@@ -91,10 +90,10 @@ public class SpecLineChart extends JFrame implements ActionListener, KeyListener
 //		loadFileButton.setFont(new Font("標楷體", Font.BOLD, 40));
 //		loadFileButton.addActionListener(this);
 //		q2Pan.add(loadFileButton);
-		compareButton = new JButton("進行辨識");
-		compareButton.setFont(new Font("標楷體", Font.BOLD, 40));
-		compareButton.addActionListener(this);
-		q2Pan.add(compareButton);
+//		compareButton = new JButton("進行辨識");
+//		compareButton.setFont(new Font("標楷體", Font.BOLD, 40));
+//		compareButton.addActionListener(this);
+//		q2Pan.add(compareButton);
 //		jtf1 = new JTextField("");// 類別輸入框
 //		jtf1.setFont(new Font("標楷體", Font.BOLD, 40));
 //		q2Pan.add(jtf1);

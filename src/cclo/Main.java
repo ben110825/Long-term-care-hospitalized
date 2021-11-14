@@ -23,6 +23,7 @@ public class Main implements Share {
     Preemphasizer preEmp;
     RaisedCosineWindower windower;
     DiscreteFourierTransform dff;
+    Compare compare;
     // public Scorer incFr;
     public Scorer scorer;
     public SpecLineChart freqFr;

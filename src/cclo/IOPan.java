@@ -15,7 +15,6 @@ import javax.swing.*;
  * @author cclo
  */
 public class IOPan extends JPanel {
-
     Main main;
     DecimalFormat df = new DecimalFormat("0.00");
     int sLevel = -1;
@@ -48,7 +47,7 @@ public class IOPan extends JPanel {
     static int mNo = 0;
     int bias = 0;
     public String selectedTone = "B-";
-
+    
     public IOPan(Main main_) {
         main = main_;
 

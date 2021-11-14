@@ -681,7 +681,8 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 	int peakCount = 0;
 	ArrayList<Integer> fivePeak;
 	PeakFeature tempPF = new PeakFeature();
-
+	PeakFeature identificationFile = new PeakFeature();
+	PeakFeature simpleFile = new PeakFeature();
 	int zeroCount = 0;
 	boolean recordFlag = false;
 	boolean hasFirstVoice = false;
@@ -690,6 +691,7 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 	int countAmbientSound = 0;
 	String storedFilePath = "./sound_source/";
 	String storedFileName = "";
+	
 	//String loadedFile = "./sound_source/"; // 讀取用路徑檔
 
 	public void findPeak(double voice[], boolean flag) { // 找出5個特徵 若沒聲音則為0
@@ -754,11 +756,9 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 			recordFlag = true;
 		
 		pMain.tFrame.panel.updatePanel(fivePeak);
-		if (recordFlag == true) {
-			if (voiceAvg / shortVoiceAvg > 1.3 || hasFirstVoice) { //啟動門檻
-
+		if (recordFlag) {
+			if (voiceAvg / shortVoiceAvg > 1.1 || hasFirstVoice) { //啟動門檻
 				hasFirstVoice = true;
-
 				bubbleSort(fivePeak, voice);		
 				if (tempPF.getCountRecord() == 0)
 					startpeakRecord();
@@ -769,7 +769,6 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 					zeroCount++;
 					System.out.println(zeroCount);
 					if (zeroCount >= 70) {
-						setRecordFlag(false);
 						//tempPF.setType(FeatureType.Cough);		//這邊是用來錄製樣本檔案使用
 						setStoredFileName(tempPF.getTime(), tempPF.type);
 						String st = getStoredFileName();
@@ -778,17 +777,12 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 							tempPF.getPeak().remove(i);
 						}
 						tempPF.setCountRecord(tempPF.getCountRecord()-zeroCount);
-						
 						pMain.freqFr.identificationFile = tempPF;
-						//pMain.freqFr.identificationFile = loadFile(st); // 讀入辨識檔
 						pMain.ioPan.tfIdentification.setText("辨識檔已準備");	//目前先使用路徑+檔名
-						zeroCount = 0; //初始化zeroCount
 						hasFirstVoice = false;
-						recordFlag = false;
-						stoppeakRecord(storedFileName);
-						System.out.println("錄音停止區塊");
-
-						
+						zeroCount = 0; 
+						tempPF = new PeakFeature();
+						new Compare(pMain.freqFr.identificationFile);
 					}
 				} else {
 					zeroCount = 0;
@@ -796,21 +790,7 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 				}
 			}
 		}
-		else if (recordFlag == false && tempPF.getCountRecord() != 0) {	//把後面的0消除
-			//System.out.println("zeroCount"+zeroCount);
-			int tempCount = tempPF.getCountRecord() - 1;
-			for (int i = tempCount; i > tempCount - zeroCount; i--) {
-				tempPF.getPeak().remove(i);
-			}
-
-			tempPF.setCountRecord(tempPF.getCountRecord()-zeroCount);
-			System.out.println(tempPF.getCountRecord());
-			System.out.println("錄音停止區塊");
-			pMain.freqFr.identificationFile = tempPF;
-			stoppeakRecord(storedFileName);
-			hasFirstVoice = false;
-
-		}
+		
 	}
 
 	public void testAmbientSound() { 
@@ -924,14 +904,6 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 		
 		
 	}
-
-//	public void setLoadedFile(String file) {
-//		this.loadedFile = file;
-//	}
-//
-//	public String getLoadedFile() {
-//		return loadedFile;
-//	}
 
 	public boolean getRecordFlag() {
 		return recordFlag;
