@@ -90,7 +90,7 @@ public class Compare {
 		for (File file : folder.listFiles()) { 
 			if (!file.isDirectory()) {
 				LoadFileName[i++] = file.getPath();
-				System.out.println(file.getPath());
+//				System.out.println(file.getPath());
 			}
 		}
 		
@@ -135,7 +135,6 @@ public class Compare {
 			System.out.println("樣本種類: " + sampleFile.getType());
 			System.out.println("樣本檔案總數: " + sampleFile.getCountRecord());
 			System.out.println("辨識種類: " + identificationFile.getType());
-			System.out.println("LCS結果: " + resultFromLCS);
 			System.out.println("樣本檔案相似度: " + acc + " %");
 			System.out.println("============================");
 			if (acc > maxSimilarity) { // 紀錄最像的
@@ -146,6 +145,9 @@ public class Compare {
 			i++;
 		}
 		classify(maxSimilarity);
+		System.out.println("* 最相似的是:"+identificationFile.getType());
+		System.out.println("* 相似度:"+maxSimilarity);
+
 		storeResult();
 		
 	}
@@ -161,7 +163,7 @@ public class Compare {
 			BufferedWriter buw = new BufferedWriter(new FileWriter(st));
 			buw.write(identificationFile.gsonout());
 			buw.close();
-			System.out.println("儲存完畢 " + st);
+			System.out.println("儲存完畢");
 		}
 		catch(IOException e) {
 			
