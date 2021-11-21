@@ -69,7 +69,7 @@ public class SpecLineChart extends JFrame implements ActionListener, KeyListener
 		container.setLayout(new GridLayout(2, 1, 20, 20));
 
 		JPanel h1Pan = new JPanel();
-		h1Pan.setLayout(new GridLayout(2, 1, 5, 5));
+		h1Pan.setLayout(new GridLayout(1, 1, 5, 5));
 
 		h1Pan.add(main.ioPan);
 		JPanel q2Pan = new JPanel();
@@ -100,7 +100,7 @@ public class SpecLineChart extends JFrame implements ActionListener, KeyListener
 
 //        q2Pan.add(main.levName);
 //        q2Pan.add(main.arrowPan);
-		h1Pan.add(q2Pan);
+//		h1Pan.add(q2Pan);
 		container.add(h1Pan);
 		container.add(chartPanel);
 		this.addComponentListener(new ComponentAdapter() {

@@ -1,6 +1,7 @@
 import pyaudio
 import wave
 import sys
+import os
 
 CHUNK = 1024
 FORMAT = pyaudio.paInt16
@@ -34,6 +35,9 @@ print("* done recording")
 stream.stop_stream()
 stream.close()
 p.terminate()
+# 若沒有這個資料夾 則新增資料夾
+if(not os.path.isdir(PATH)):
+    os.mkdir(PATH)
 
 wf = wave.open(PATH+"/"+WAVE_OUTPUT_FILENAME, 'wb')
 wf.setnchannels(CHANNELS)
