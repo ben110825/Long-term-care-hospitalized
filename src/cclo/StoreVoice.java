@@ -19,7 +19,6 @@ public class StoreVoice extends Thread{
 		Process proc;
 		try {
 			String temp = compiler+" "+codePath+" "+filePath+" "+fileName;
-			System.out.println("temp "+temp);
 			proc = Runtime.getRuntime().exec(temp);
             BufferedReader in = new BufferedReader(new InputStreamReader(proc.getInputStream()));  
             String line = null;  

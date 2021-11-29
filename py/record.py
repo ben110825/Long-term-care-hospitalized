@@ -8,7 +8,7 @@ FORMAT = pyaudio.paInt16
 CHANNELS = 2
 RATE = 44100
 RECORD_SECONDS = 3
-WAVE_OUTPUT_FILENAME = sys.argv[2]+sys.argv[3]+".wav"
+WAVE_OUTPUT_FILENAME = sys.argv[2]+" "+sys.argv[3]+".wav"
 PATH = sys.argv[1]
 
 

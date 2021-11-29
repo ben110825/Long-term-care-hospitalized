@@ -152,8 +152,11 @@ public class Compare {
 		
 	}
 	public void classify(int maxSimilarity) {	//分類
-		if(maxSimilarity >= 60)
+		if(maxSimilarity >= 60) {
 			identificationFile.setType(sampleFile.getType());
+			delRecordingFile(identificationFile.getTime());
+		}
+			
 	}
 	public void storeResult() {	//儲存結果
 		try{
@@ -168,6 +171,20 @@ public class Compare {
 		catch(IOException e) {
 			
 		}
+		
+	}
+	public void delRecordingFile(String file) {
+		File delFile = new File("D:\\project\\Long-term-care-hospitalized\\sound_source\\voice_Unidentified\\"+file+".wav");
+		while(true) {
+			System.out.println(file);
+			if(delFile.delete()) {
+				System.out.println("檔案已刪除");
+				break;
+
+			}
+		}
+		
+		
 		
 	}
 	public String setStoredFileName(String file, FeatureType Type) {
