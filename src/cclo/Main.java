@@ -7,14 +7,7 @@ import edu.cmu.sphinx.frontend.window.RaisedCosineWindower;
 import edu.cmu.sphinx.frontend.util.Microphone;
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import java.io.EOFException;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.Socket;
 import javax.swing.JFrame;
-import javax.swing.Timer;
-import org.jfree.ui.RefineryUtilities;
 
 public class Main implements Share {
 

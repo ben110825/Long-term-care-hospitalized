@@ -12,8 +12,8 @@ WAVE_OUTPUT_FILENAME = sys.argv[2]+" "+sys.argv[3]+".wav"
 PATH = sys.argv[1]
 
 
-print(WAVE_OUTPUT_FILENAME)
-print(PATH)
+# print(WAVE_OUTPUT_FILENAME)
+# print(PATH)
 p = pyaudio.PyAudio()
 
 stream = p.open(format=FORMAT,

@@ -10,7 +10,9 @@ import java.util.ArrayList;
 import com.google.gson.Gson;
 
 public class Compare {
+	SendMail mail;
 	Compare(PeakFeature identificationFile){
+		mail = new SendMail();
 		this.identificationFile = identificationFile;
 		String compareFolder = "./sound_source/test";	//讀取sample路徑
 		loadFilePath(compareFolder);
@@ -23,7 +25,7 @@ public class Compare {
 		int difference = 0;
 		boolean similar;
 		boolean[] marked = {true, true, true, true, true};
-		ArrayList<Integer> tempAl = new ArrayList();
+		ArrayList<Integer> tempAl = new ArrayList<Integer>();
 		for(int i=0;i<5;i++) {
 			tempAl.add(0);
 		}
@@ -50,11 +52,8 @@ public class Compare {
 
 		}
 		
-		if(difference < 180) {		//相似
+		if(difference < 50) {		//相似
 			similar = true;
-//			System.out.println("AL1: "+al1);
-//			System.out.println("AL2: "+al2);
-		//System.out.println("Final difference: "+difference);
 		}
 		else					//不相似
 			similar  = false;
@@ -128,14 +127,12 @@ public class Compare {
 
 			int resultFromLCS = Compare.lcs(sampleFile, identificationFile);
 			int acc = (int) (100 * ((double) resultFromLCS / (double) sampleFile.getCountRecord()));
-			System.out.println("辨識檔案總數: " + identificationFile.getCountRecord());
-			System.out.println("辨識檔案相似度: "
-					+ 100 * ((double) resultFromLCS / (double) identificationFile.getCountRecord()) + " %");
-
+			System.out.println("樣本名稱: "+sampleFile.getTime());
 			System.out.println("樣本種類: " + sampleFile.getType());
 			System.out.println("樣本檔案總數: " + sampleFile.getCountRecord());
 			System.out.println("辨識種類: " + identificationFile.getType());
 			System.out.println("樣本檔案相似度: " + acc + " %");
+			System.out.println();
 			System.out.println("============================");
 			if (acc > maxSimilarity) { // 紀錄最像的
 				flag = true;
@@ -154,7 +151,7 @@ public class Compare {
 	public void classify(int maxSimilarity) {	//分類
 		if(maxSimilarity >= 60) {
 			identificationFile.setType(sampleFile.getType());
-			delRecordingFile(identificationFile.getTime());
+			mail.send("test", sampleFile.getType()+"警告");
 		}
 			
 	}
@@ -173,20 +170,8 @@ public class Compare {
 		}
 		
 	}
-	public void delRecordingFile(String file) {
-		File delFile = new File("D:\\project\\Long-term-care-hospitalized\\sound_source\\voice_Unidentified\\"+file+".wav");
-		while(true) {
-			System.out.println(file);
-			if(delFile.delete()) {
-				System.out.println("檔案已刪除");
-				break;
-
-			}
-		}
 		
 		
-		
-	}
 	public String setStoredFileName(String file, FeatureType Type) {
 		 return file + "_" +Type +".json";
 	}

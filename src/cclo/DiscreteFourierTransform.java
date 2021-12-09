@@ -17,6 +17,7 @@ import edu.cmu.sphinx.frontend.DataProcessingException;
 import edu.cmu.sphinx.frontend.DoubleData;
 import edu.cmu.sphinx.util.Complex;
 import edu.cmu.sphinx.util.props.*;
+
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -691,7 +692,7 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 	int countAmbientSound = 0;
 	String storedFilePath = "./sound_source/";
 	String storedFileName = "";
-	String storedVoicePath = "D:\\project\\Long-term-care-hospitalized\\sound_source\\voice_Unidentified";
+	String storedVoicePath = "D:\\project\\Long-term-care-hospitalized\\sound_source\\voice_Unidentified\\";
 	
 	//String loadedFile = "./sound_source/"; // 讀取用路徑檔
 
@@ -758,14 +759,12 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 		
 		pMain.tFrame.panel.updatePanel(fivePeak);
 		if (recordFlag) {
+			EngineeCore engineeCore = null;
 			if (voiceAvg / shortVoiceAvg > 1.1 || hasFirstVoice) { //啟動門檻
 				hasFirstVoice = true;
 				bubbleSort(fivePeak, voice);		
 				if (tempPF.getCountRecord() == 0 && (voiceAvg / shortVoiceAvg > 1.1 || hasFirstVoice)) {
 					startpeakRecord();
-					StoreVoice storevoice = new StoreVoice(tempPF.getTime(), storedVoicePath);
-					storevoice.run();
-
 				}
 				tempPF.setCountRecord(tempPF.getCountRecord() + 1);
 //				System.out.println("錄音區塊" + tempPF.getCountRecord());
@@ -776,7 +775,7 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 					if (zeroCount >= 70) {
 						//tempPF.setType(FeatureType.Cough);		//這邊是用來錄製樣本檔案使用
 						setStoredFileName(tempPF.getTime(), tempPF.type);
-						String st = getStoredFileName();
+//						engineeCore.stopRecognize();
 						int tempCount = tempPF.getCountRecord() - 1;
 						for (int i = tempCount; i > tempCount - zeroCount; i--) {
 							tempPF.getPeak().remove(i);
