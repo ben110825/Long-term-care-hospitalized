@@ -661,7 +661,7 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 		}
 		double sum = 0;
 		for (int i = 0; i < FFTNo; i++) {
-			shortVoice[i] = shortVoice[i] * 0.996 + Math.log10(voice[i]) * 0.004;
+			shortVoice[i] = shortVoice[i] * 0.997 + Math.log10(voice[i]) * 0.003;
 			sum += shortVoice[i];
 			voiceAvg += Math.log10(voice[i]);
 		}
@@ -759,11 +759,11 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 		
 		pMain.tFrame.panel.updatePanel(fivePeak);
 		if (recordFlag) {
-			EngineeCore engineeCore = null;
-			if (voiceAvg / shortVoiceAvg > 1.1 || hasFirstVoice) { //啟動門檻
+			Compare compare;
+			if (voiceAvg / shortVoiceAvg > 1.3 || hasFirstVoice) { //啟動門檻
 				hasFirstVoice = true;
-				bubbleSort(fivePeak, voice);		
-				if (tempPF.getCountRecord() == 0 && (voiceAvg / shortVoiceAvg > 1.1 || hasFirstVoice)) {
+//				bubbleSort(fivePeak, voice);		
+				if (tempPF.getCountRecord() == 0 && (voiceAvg / shortVoiceAvg > 1.3 || hasFirstVoice)) {
 					startpeakRecord();
 				}
 				tempPF.setCountRecord(tempPF.getCountRecord() + 1);
@@ -773,7 +773,7 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 					zeroCount++;
 //					System.out.println(zeroCount);
 					if (zeroCount >= 70) {
-						//tempPF.setType(FeatureType.Cough);		//這邊是用來錄製樣本檔案使用
+			//			tempPF.setType(FeatureType.Snore);		//這邊是用來錄製樣本檔案使用
 						setStoredFileName(tempPF.getTime(), tempPF.type);
 //						engineeCore.stopRecognize();
 						int tempCount = tempPF.getCountRecord() - 1;
@@ -781,14 +781,24 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 							tempPF.getPeak().remove(i);
 						}
 						tempPF.setCountRecord(tempPF.getCountRecord()-zeroCount);
-						pMain.freqFr.identificationFile = tempPF;
 						pMain.ioPan.tfIdentification.setText("辨識檔已準備");	//目前先使用路徑+檔名
+						pMain.ioPan.tfSample.setText("./test");
+						if(tempPF.countRecord >=60 && tempPF.countRecord <=400) {
+							compare = new Compare(tempPF);
+							pMain.ioPan.tfResult.setText(compare.result+"");
+							pMain.ioPan.tfAcc.setText(compare.resultAcc+"");
+						}
+							
+						
+							
+						
 						hasFirstVoice = false;
 						zeroCount = 0; 
 						tempPF = new PeakFeature();
-						new Compare(pMain.freqFr.identificationFile);
+						
 					}
 				} else {
+					tempPF.zeroCount += zeroCount;
 					zeroCount = 0;
 
 				}

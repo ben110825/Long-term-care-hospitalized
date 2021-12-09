@@ -16,7 +16,7 @@ public class SendMail {
 
 	private String userName = "ben110825@gmail.com"; // 寄件者信箱
 	private String password = "avwvwphyfyzkfaxs"; // 寄件者密碼
-	private String customer = "pony0613@icloud.com"; // 收件者郵箱
+	private String customer = "ben110825@gmail.com"; // 收件者郵箱
 	private String subject = ""; // 標題
 	private String txt = ""; // 內容
 

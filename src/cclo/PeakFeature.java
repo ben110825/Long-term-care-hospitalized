@@ -15,12 +15,14 @@ public class PeakFeature {
 	Compare compare;
 	double similarity;	//相似度
 	int countRecord;
+	int zeroCount;
 	FeatureType type;
 	
 	PeakFeature() {
 		this.type = FeatureType.Unidentified;
 		this.countRecord = 0;
 		this.similarity = 0;
+		zeroCount = 0;
 	}
 
 	PeakFeature(ArrayList<ArrayList<Integer>> peak, FeatureType type) {
@@ -36,29 +38,7 @@ public class PeakFeature {
 		this.type = FeatureType.Unidentified;		// 用這個建構子
 
 	} 
-	protected void analize(PeakFeature simpleFile){
-
-		FeatureType resultType = FeatureType.Unidentified;
-		double lengthRatio = (double)simpleFile.getCountRecord()/(double)this.getCountRecord(); //長度比例
-		System.out.println("simple length: "+simpleFile.getCountRecord());
-		System.out.println("identification length: "+this.getCountRecord());
-
-		if(lengthRatio > 1.2 || lengthRatio < 0.8) {	//暫時先不用
-	//		System.out.println("長度相差過多");
-		}
-		
-		int resultFromLCS = compare.lcs(simpleFile, this);
-		System.out.println("LCS結果: "+resultFromLCS);
-		System.out.println("樣本檔案總數: "+ simpleFile.getCountRecord());
-		System.out.println("樣本檔案相似度: "+100*((double)resultFromLCS/(double)simpleFile.getCountRecord())+" %");
-		System.out.println("辨識檔案總數: "+ this.getCountRecord());
-		System.out.println("辨識檔案相似度: "+100*((double)resultFromLCS/(double)this.getCountRecord())+" %");
-		
-		
-		
-		
-		setType(resultType);
-	}
+	
 	public void recordingFeature(ArrayList<Integer> al) {
 		peak.add(al);
 	}
