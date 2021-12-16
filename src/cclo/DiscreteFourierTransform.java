@@ -690,43 +690,25 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 	boolean hasAmbientSound = true;
 	boolean testAmbientSoundFlag = true;
 	int countAmbientSound = 0;
+	String model = "";
 	String storedFilePath = "./sound_source/";
 	String storedFileName = "";
 	String storedVoicePath = "D:\\project\\Long-term-care-hospitalized\\sound_source\\voice_Unidentified\\";
-	
-	//String loadedFile = "./sound_source/"; // 讀取用路徑檔
+	InterruptedSwing interruptedSwingnew = new InterruptedSwing();
+
+	// String loadedFile = "./sound_source/"; // 讀取用路徑檔
 
 	public void findPeak(double voice[], boolean flag) { // 找出5個特徵 若沒聲音則為0
 		boolean peakIsEmpty = false;
 		fivePeak = new ArrayList<Integer>();
 		int max = 0;
-		// System.out.println(recordFlag);
 		if (flag) {
-//			for(int i=0;i<FFTNo;i++) {
-//				int max = 0;
-//				if(voice[max] < voice[i])
-//					max = i;
-//			}
-			for (int i = 1; i < FFTNo-1 ; i++) {
-				// System.out.println(voice[i]);
-//				int leftBoundary = i;
-//				int rightBoundary = leftBoundary + 5;
-//				int mid = (leftBoundary + rightBoundary) / 2;
-//				int max = leftBoundary;
-//				for (int j = leftBoundary; j < rightBoundary; j++) {
-//					// System.out.println("MAX ="+voice[max] +" "+"j = "+voice[j]);
-//					if (Math.log10(voice[j]) > Math.log10(voice[max])) {
-//						max = j;
-//					}
-//				}
+			for (int i = 1; i < FFTNo - 1; i++) {
 				boolean findmax = false;
-				if(voice[i+1] < voice[i] && voice[i-1] < voice[i]) {
+				if (voice[i + 1] < voice[i] && voice[i - 1] < voice[i]) {
 					max = i;
 					findmax = true;
 				}
-					
-				
-//				if (Math.log10(voice[max]) == Math.log10(voice[mid]))
 				if (findmax) {
 					// System.out.println(mid);
 					if (fivePeak.size() < 5) {
@@ -751,16 +733,29 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 				peakIsEmpty = true;
 			}
 		}
-	//	System.out.println(pMain.freqFr.identificationFile);
-		if(testAmbientSoundFlag)
+		// System.out.println(pMain.freqFr.identificationFile);
+		if (testAmbientSoundFlag) {
+			model = "testAmbientSound_Mod";
 			testAmbientSound();
-		else
+		} else {
+			model = "normal_Mod";
+			interruptedSwingnew.flag = false;
 			recordFlag = true;
-		
-		pMain.tFrame.panel.updatePanel(fivePeak);
+		}
+		switch(model) {
+			case "testAmbientSound_Mod":
+				break;
+			case "normal_Mod":
+				break;
+			case "record_Mod":
+				tempPF.setType(pMain.freqFr.chooseSampleType);
+				break;
+			case "identify_Mod":
+				break;
+		}
 		if (recordFlag) {
 			Compare compare;
-			if (voiceAvg / shortVoiceAvg > 1.3 || hasFirstVoice) { //啟動門檻
+			if (voiceAvg / shortVoiceAvg > 1.3 || hasFirstVoice) { // 啟動門檻
 				hasFirstVoice = true;
 //				bubbleSort(fivePeak, voice);		
 				if (tempPF.getCountRecord() == 0 && (voiceAvg / shortVoiceAvg > 1.3 || hasFirstVoice)) {
@@ -773,29 +768,26 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 					zeroCount++;
 //					System.out.println(zeroCount);
 					if (zeroCount >= 70) {
-			//			tempPF.setType(FeatureType.Snore);		//這邊是用來錄製樣本檔案使用
+//						tempPF.setType(FeatureType.Snore); //這邊是用來錄製樣本檔案使用
 						setStoredFileName(tempPF.getTime(), tempPF.type);
 //						engineeCore.stopRecognize();
 						int tempCount = tempPF.getCountRecord() - 1;
 						for (int i = tempCount; i > tempCount - zeroCount; i--) {
 							tempPF.getPeak().remove(i);
 						}
-						tempPF.setCountRecord(tempPF.getCountRecord()-zeroCount);
-						pMain.ioPan.tfIdentification.setText("辨識檔已準備");	//目前先使用路徑+檔名
+						tempPF.setCountRecord(tempPF.getCountRecord() - zeroCount);
+						pMain.ioPan.tfIdentification.setText("辨識檔已準備"); // 目前先使用路徑+檔名
 						pMain.ioPan.tfSample.setText("./test");
-						if(tempPF.countRecord >=60 && tempPF.countRecord <=400) {
+						if (tempPF.countRecord >= 60 && tempPF.countRecord <= 400) {
 							compare = new Compare(tempPF);
-							pMain.ioPan.tfResult.setText(compare.result+"");
-							pMain.ioPan.tfAcc.setText(compare.resultAcc+"");
+							pMain.ioPan.tfResult.setText(compare.result + "");
+							pMain.ioPan.tfAcc.setText(compare.resultAcc + "");
 						}
-							
-						
-							
-						
+
 						hasFirstVoice = false;
-						zeroCount = 0; 
+						zeroCount = 0;
 						tempPF = new PeakFeature();
-						
+
 					}
 				} else {
 					tempPF.zeroCount += zeroCount;
@@ -804,10 +796,10 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 				}
 			}
 		}
-		
+
 	}
 
-	public void testAmbientSound() { 
+	public void testAmbientSound() {
 		ArrayList<Integer> tempAl = new ArrayList<Integer>();
 		for (int i = 0; i < 5; i++) {
 			tempAl.add(0);
@@ -825,7 +817,6 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 				testAmbientSoundFlag = false;
 
 			}
-			
 
 		}
 
@@ -838,13 +829,13 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 		for (int i = 0; i < length; i++) {
 
 			for (int j = 0; j < length - 1; j++) {
-				if (Math.log10(voice[(int) al.get(j)]) < Math.log10(voice[(int) al.get(j+1)])) { // 若後大於前則互換
+				if (Math.log10(voice[(int) al.get(j)]) < Math.log10(voice[(int) al.get(j + 1)])) { // 若後大於前則互換
 					temp = (int) al.get(j);
 					al.set(j, al.get(j + 1));
 					al.set(j + 1, temp);
 				}
 			}
-			
+
 		}
 	}
 
@@ -855,7 +846,7 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 	 * (IOException e) { // TODO Auto-generated catch block e.printStackTrace(); } }
 	 */
 	public void startpeakRecord() {
-		//tempPF = new PeakFeature();
+		// tempPF = new PeakFeature();
 		Date date = new Date();
 		SimpleDateFormat myFmt = new SimpleDateFormat("yyyy_MM_dd HH_mm_ss");
 		tempPF.setTime(myFmt.format(date));
@@ -880,7 +871,7 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 
 	public PeakFeature loadFile(String loadedFile) {
 		PeakFeature tempLoad = new PeakFeature();
-	//	System.out.println("LoadFile " + loadedFile);
+		// System.out.println("LoadFile " + loadedFile);
 		Gson gson = new Gson();
 		try (Reader reader = new FileReader(loadedFile)) {
 			// Convert JSON File to Java Object
@@ -903,7 +894,7 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 	}
 
 	public void setStoredFileName(String file, FeatureType Type) {
-		this.storedFileName = storedFilePath + file + "_" +Type +".json";
+		this.storedFileName = storedFilePath + file + "_" + Type + ".json";
 	}
 
 	public String getStoredFileName() {
@@ -913,22 +904,17 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 	protected String getStoredFilePath() {
 		return storedFilePath;
 	}
+
 	protected void setStoredFilePath(String storedFilePath) {
 		this.storedFilePath = storedFilePath;
-		
-		
+
 	}
 
-	public boolean getRecordFlag() {
-		return recordFlag;
-	}
 
 	public ArrayList<Integer> getFivePeak() {
 
 		return fivePeak;
 	}
 
-	protected void setRecordFlag(boolean recordFlag) {
-		this.recordFlag = recordFlag;
-	}
+	
 }

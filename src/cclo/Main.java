@@ -24,7 +24,7 @@ public class Main implements Share {
     public IOPan ioPan;
     public LevName levName;
     public ArrowPan arrowPan;
-    public DemoFrame tFrame;
+//    public DemoFrame tFrame;
     public static PeakPanel PeakPanel; 
     // public PercentPan percPan;
     public int nodeType;
@@ -82,7 +82,7 @@ public class Main implements Share {
         freqFr = new SpecLineChart("Body Signal", this);
         // freqFr.pack();
         // RefineryUtilities.centerFrameOnScreen(freqFr);
-        tFrame  = new DemoFrame(this);
+//        tFrame  = new DemoFrame(this);
         freqFr.setVisible(true);
         levName.setVisible(true);
         freqFr.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -91,7 +91,7 @@ public class Main implements Share {
 
     public static void main(String[] args) {
             Main aed = new Main();
-
+            System.out.println("");
             Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
             double sWidth = screenSize.getWidth();
             double sHeight = screenSize.getHeight();
