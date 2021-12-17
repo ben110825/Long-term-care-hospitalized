@@ -18,22 +18,18 @@ import edu.cmu.sphinx.frontend.DoubleData;
 import edu.cmu.sphinx.util.Complex;
 import edu.cmu.sphinx.util.props.*;
 
-import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+
 import javax.swing.JOptionPane;
-import javax.swing.Timer;
 
 import com.google.gson.Gson;
 
@@ -688,13 +684,13 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 	boolean recordFlag = false;
 	boolean hasFirstVoice = false;
 	boolean hasAmbientSound = true;
-	boolean testAmbientSoundFlag = true;
+	boolean measureAmbientSoundFlag = true;
 	int countAmbientSound = 0;
 	String model = "";
 	String storedFilePath = "./sound_source/";
 	String storedFileName = "";
 	String storedVoicePath = "D:\\project\\Long-term-care-hospitalized\\sound_source\\voice_Unidentified\\";
-	InterruptedSwing interruptedSwingnew = new InterruptedSwing();
+	ProgressBar progressBar = new ProgressBar();
 
 	// String loadedFile = "./sound_source/"; // 讀取用路徑檔
 
@@ -733,51 +729,76 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 				peakIsEmpty = true;
 			}
 		}
-		// System.out.println(pMain.freqFr.identificationFile);
-		if (testAmbientSoundFlag) {
+		if (measureAmbientSoundFlag) {
 			model = "testAmbientSound_Mod";
-			testAmbientSound();
+			measureAmbientSound();
+			pMain.freqFr.changeModel();
 		} else {
-			model = "normal_Mod";
-			interruptedSwingnew.flag = false;
-			recordFlag = true;
+			progressBar.flag = false;
 		}
-		switch(model) {
-			case "testAmbientSound_Mod":
-				break;
-			case "normal_Mod":
-				break;
-			case "record_Mod":
-				tempPF.setType(pMain.freqFr.chooseSampleType);
-				break;
-			case "identify_Mod":
-				break;
-		}
-		if (recordFlag) {
-			Compare compare;
+		switch (model) {
+		case "testAmbientSound_Mod":
+			break;
+		case "record_Mod":
+
 			if (voiceAvg / shortVoiceAvg > 1.3 || hasFirstVoice) { // 啟動門檻
 				hasFirstVoice = true;
-//				bubbleSort(fivePeak, voice);		
 				if (tempPF.getCountRecord() == 0 && (voiceAvg / shortVoiceAvg > 1.3 || hasFirstVoice)) {
 					startpeakRecord();
 				}
 				tempPF.setCountRecord(tempPF.getCountRecord() + 1);
-//				System.out.println("錄音區塊" + tempPF.getCountRecord());
 				tempPF.recordingFeature(fivePeak);
 				if (peakIsEmpty) {
 					zeroCount++;
-//					System.out.println(zeroCount);
 					if (zeroCount >= 70) {
-//						tempPF.setType(FeatureType.Snore); //這邊是用來錄製樣本檔案使用
+						setStoredFilePath("./sound_source/sample/");
+						tempPF.setType(pMain.freqFr.chooseSampleType); // 這邊是用來錄製樣本檔案使用
 						setStoredFileName(tempPF.getTime(), tempPF.type);
-//						engineeCore.stopRecognize();
+						int tempCount = tempPF.getCountRecord() - 1;
+						for (int i = tempCount; i > tempCount - zeroCount; i--) {
+							tempPF.getPeak().remove(i);
+						}
+						tempPF.setCountRecord(tempPF.getCountRecord() - zeroCount);
+						if (tempPF.countRecord >= 60 && tempPF.countRecord <= 400) {
+							storeSample(storedFileName);
+						} else if (tempPF.countRecord < 60) {
+							JOptionPane.showMessageDialog(pMain.freqFr, "錄音過短");
+						} else
+							JOptionPane.showMessageDialog(pMain.freqFr, "錄音過長");
+
+						hasFirstVoice = false;
+						zeroCount = 0;
+						tempPF = new PeakFeature();
+
+					}
+				} else {
+					tempPF.zeroCount += zeroCount;
+					zeroCount = 0;
+
+				}
+			}
+
+			break;
+		case "identify_Mod":
+
+			Compare compare;
+			if (voiceAvg / shortVoiceAvg > 1.3 || hasFirstVoice) { // 啟動門檻
+				hasFirstVoice = true;
+				if (tempPF.getCountRecord() == 0 && (voiceAvg / shortVoiceAvg > 1.3 || hasFirstVoice)) {
+					startpeakRecord();
+				}
+				tempPF.setCountRecord(tempPF.getCountRecord() + 1);
+				tempPF.recordingFeature(fivePeak);
+				if (peakIsEmpty) {
+					zeroCount++;
+					if (zeroCount >= 70) {
+						setStoredFileName(tempPF.getTime(), tempPF.type);
 						int tempCount = tempPF.getCountRecord() - 1;
 						for (int i = tempCount; i > tempCount - zeroCount; i--) {
 							tempPF.getPeak().remove(i);
 						}
 						tempPF.setCountRecord(tempPF.getCountRecord() - zeroCount);
 						pMain.ioPan.tfIdentification.setText("辨識檔已準備"); // 目前先使用路徑+檔名
-						pMain.ioPan.tfSample.setText("./test");
 						if (tempPF.countRecord >= 60 && tempPF.countRecord <= 400) {
 							compare = new Compare(tempPF);
 							pMain.ioPan.tfResult.setText(compare.result + "");
@@ -795,11 +816,13 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 
 				}
 			}
+
+			break;
 		}
 
 	}
 
-	public void testAmbientSound() {
+	public void measureAmbientSound() { // 測試環境音
 		ArrayList<Integer> tempAl = new ArrayList<Integer>();
 		for (int i = 0; i < 5; i++) {
 			tempAl.add(0);
@@ -814,7 +837,8 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 		} else {
 			if (countAmbientSound == 200) {
 				System.out.println("測試完畢");
-				testAmbientSoundFlag = false;
+				measureAmbientSoundFlag = false;
+				model = "normal_Mod";
 
 			}
 
@@ -822,51 +846,26 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 
 	}
 
-	public void bubbleSort(ArrayList<Integer> al, double voice[]) { // 排序al
-		int length = al.size();
-		int temp;
+	public void storeSample(String name) {
+		try {
+			File file = new File(name);
+			file.createNewFile();
+			BufferedWriter buw = new BufferedWriter(new FileWriter(name));
+			buw.write(tempPF.gsonout());
+			buw.close();
+			System.out.println("儲存完畢");
+			JOptionPane.showMessageDialog(pMain.freqFr, "已儲存");
 
-		for (int i = 0; i < length; i++) {
-
-			for (int j = 0; j < length - 1; j++) {
-				if (Math.log10(voice[(int) al.get(j)]) < Math.log10(voice[(int) al.get(j + 1)])) { // 若後大於前則互換
-					temp = (int) al.get(j);
-					al.set(j, al.get(j + 1));
-					al.set(j + 1, temp);
-				}
-			}
+		} catch (Exception e) {
 
 		}
 	}
 
-	/*
-	 * public void createNewStroedFile() { //建立新檔案 try {
-	 * //System.out.println(storedFilePath+storedFileName); File dir_file = new
-	 * File(storedFilePath+temp.getTime()); dir_file.createNewFile(); } catch
-	 * (IOException e) { // TODO Auto-generated catch block e.printStackTrace(); } }
-	 */
 	public void startpeakRecord() {
 		// tempPF = new PeakFeature();
 		Date date = new Date();
 		SimpleDateFormat myFmt = new SimpleDateFormat("yyyy_MM_dd HH_mm_ss");
 		tempPF.setTime(myFmt.format(date));
-	}
-
-	public void stoppeakRecord(String storedFileName) {
-//		try {
-//		//	System.out.println("storedFileName " + storedFileName);
-//			File dir_file = new File(storedFileName);
-//			dir_file.createNewFile();
-//			BufferedWriter buw = new BufferedWriter(new FileWriter(storedFileName));
-//			buw.write(tempPF.gsonout());
-//			buw.close();
-//			System.out.println("儲存完畢");
-//			tempPF = new PeakFeature();
-//		} catch (IOException e1) {
-//			// TODO Auto-generated catch block
-//			e1.printStackTrace();
-//		}
-		tempPF = new PeakFeature();
 	}
 
 	public PeakFeature loadFile(String loadedFile) {
@@ -897,24 +896,21 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 		this.storedFileName = storedFilePath + file + "_" + Type + ".json";
 	}
 
-	public String getStoredFileName() {
-		return storedFileName;
-	}
-
-	protected String getStoredFilePath() {
-		return storedFilePath;
-	}
-
 	protected void setStoredFilePath(String storedFilePath) {
 		this.storedFilePath = storedFilePath;
-
 	}
 
+	public String getModel() {
+		return model;
+	}
+
+	public void setModel(String model) {
+		this.model = model;
+	}
 
 	public ArrayList<Integer> getFivePeak() {
 
 		return fivePeak;
 	}
 
-	
 }

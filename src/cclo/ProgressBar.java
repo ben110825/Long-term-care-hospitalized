@@ -6,12 +6,14 @@ import javax.swing.*;
 import java.awt.*;
 import java.time.LocalDateTime;
 
-class InterruptedSwing extends JFrame {
+class ProgressBar extends JFrame {
 	Thread thread;// 宣告執行緒
 	boolean flag = true;
 
-	public InterruptedSwing() {
+	public ProgressBar() {
 		Font font = new Font("標楷體",Font.BOLD,20);
+		ImageIcon icon = new ImageIcon("./icon/icon.png");
+		setIconImage(icon.getImage());
 		setSize(200, 100);// 設定窗體寬高
 		setVisible(true);// 窗體可見
 		setLocationRelativeTo(null);

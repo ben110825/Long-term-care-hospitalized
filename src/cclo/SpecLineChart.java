@@ -29,18 +29,19 @@ import org.jfree.ui.RefineryUtilities;
  * data from an {@link XYDataset}.
  *
  */
-public class SpecLineChart extends JFrame implements ActionListener  {
-	
+public class SpecLineChart extends JFrame implements ActionListener {
+
 	final int FFTNo = 1024;
 	PeakFeature sampleFile;
 	PeakFeature identificationFile;
 	XYSeries series1;
 	Main main;
-	InterruptedSwing interruptedSwing;
-	JButton recordSampleBtn, startIdentifyBtn ;
+	ProgressBar progressBar;
+	JButton startRecordSampleBtn, startIdentifyBtn, stopRecordSampleBtn, stopIdentifyBtn;
 	JComboBox<FeatureType> sampleType;
 	String LoadFileName[]; // 所有讀進來的檔案名稱
-	String[] featureType ;
+	String[] featureType;
+	String model = "";
 	FeatureType chooseSampleType;
 	boolean flag = false;
 	// final ChartPanel chartPanel;
@@ -50,11 +51,17 @@ public class SpecLineChart extends JFrame implements ActionListener  {
 		super(title);
 		main = main_;
 		featureType = new String[100];
+		int i = 0;
+		for (FeatureType f : FeatureType.values()) {
+			featureType[i++] = f + "";
+		}
 		final XYDataset dataset = createDataset();
 		final JFreeChart chart = createChart(dataset);
 		final ChartPanel chartPanel = new ChartPanel(chart);
+		ImageIcon icon = new ImageIcon("./icon/icon.png");
 		setFocusable(true);
 		setFocusTraversalKeysEnabled(false);
+		setIconImage(icon.getImage());
 		// chartPanel.setPreferredSize(new java.awt.Dimension(1600, 400));
 		// setContentPane(chartPanel);
 		this.setBounds(50, 50, 1200, 600);
@@ -67,18 +74,25 @@ public class SpecLineChart extends JFrame implements ActionListener  {
 		h1Pan.add(main.ioPan);
 		JPanel q2Pan = new JPanel();
 		q2Pan.setLayout(new GridLayout(2, 5, 5, 5));
-		recordSampleBtn = new JButton("錄製樣本檔案");
-		recordSampleBtn.setFont(new Font("標楷體", Font.BOLD, 40));
-		recordSampleBtn.addActionListener(this);
-		q2Pan.add(recordSampleBtn);
-		int i = 0;
-		for(FeatureType f:FeatureType.values()) {
-			featureType[i++] = f+"";
-		}
+		startRecordSampleBtn = new JButton("錄製樣本檔案");
+		startRecordSampleBtn.setFont(new Font("標楷體", Font.BOLD, 40));
+		startRecordSampleBtn.addActionListener(this);
+		q2Pan.add(startRecordSampleBtn);
+
+		stopRecordSampleBtn = new JButton("停止錄製樣本檔案");
+		stopRecordSampleBtn.setFont(new Font("標楷體", Font.BOLD, 40));
+		stopRecordSampleBtn.addActionListener(this);
+		q2Pan.add(stopRecordSampleBtn);
+
 		startIdentifyBtn = new JButton("進入辨識模式");
 		startIdentifyBtn.setFont(new Font("標楷體", Font.BOLD, 40));
 		startIdentifyBtn.addActionListener(this);
 		q2Pan.add(startIdentifyBtn);
+
+		stopIdentifyBtn = new JButton("退出辨識模式");
+		stopIdentifyBtn.setFont(new Font("標楷體", Font.BOLD, 40));
+		stopIdentifyBtn.addActionListener(this);
+		q2Pan.add(stopIdentifyBtn);
 
 		h1Pan.add(q2Pan);
 		container.add(h1Pan);
@@ -90,6 +104,7 @@ public class SpecLineChart extends JFrame implements ActionListener  {
 			}
 		});
 		this.pack();
+
 	}
 
 	/**
@@ -194,25 +209,76 @@ public class SpecLineChart extends JFrame implements ActionListener  {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if(e.getSource()==recordSampleBtn && main.dff.model!="testAmbientSound_Mod") {	//按下錄製樣本檔案的按鈕
-			System.out.println(main.dff.model);
-			main.dff.model = "record_Mod";
-	        String temp= (String)JOptionPane.showInputDialog(this,"選擇要錄製的樣本檔案","錄製樣本檔案",
-	        		JOptionPane.INFORMATION_MESSAGE,null,featureType,featureType[0]);
-//	        for(FeatureType f:FeatureType.values()) {		// String to FeatureType
-//				
-//			}
-//	        chooseSampleType = temp;
-	        System.out.println(chooseSampleType);
-		}
-		else if(e.getSource()==startIdentifyBtn && main.dff.model!="testAmbientSound_Mod") {	//按下辨識模式的按鈕
-			main.dff.model = "identify_Mod";
+		if (main.dff.model == "testAmbientSound_Mod") {
+			JOptionPane.showMessageDialog(this, "目前正在測試環境音!!", "error", JOptionPane.WARNING_MESSAGE);
+		} else {
+			if (e.getSource() == startRecordSampleBtn) { // 按下錄製樣本檔案的按鈕
+				if (main.dff.getModel() == "record_Mod")
+					JOptionPane.showMessageDialog(this, "錄音中!!", "error", JOptionPane.WARNING_MESSAGE);
+				else {
+					main.dff.setModel("record_Mod"); // 更改model
+					changeModel();
+					String temp = (String) JOptionPane.showInputDialog(this, "選擇要錄製的樣本檔案", "錄製樣本檔案",
+							JOptionPane.INFORMATION_MESSAGE, null, featureType, featureType[0]);
+					for (FeatureType f : FeatureType.values()) { // String to FeatureType
+						if ((f + "").equals(temp)) {
+							chooseSampleType = f;
+							break;
+						}
+					}
+					JOptionPane.showMessageDialog(this, "目前錄製樣本種類: " + chooseSampleType, "開始錄音", 1);
+				}
+
+			} else if (e.getSource() == startIdentifyBtn ) { // 按下辨識模式的按鈕
+				if(main.dff.getModel() == "identify_Mod")
+					JOptionPane.showMessageDialog(this, "目前已經是辨識模式!!", "error", JOptionPane.WARNING_MESSAGE);
+				else {
+					main.dff.setModel("identify_Mod"); // 更改model
+					changeModel();
+					JOptionPane.showMessageDialog(this, "進入辨識模式");
+				}
+
+			} else if (e.getSource() == stopRecordSampleBtn) {
+				if (main.dff.getModel() != "record_Mod")
+					JOptionPane.showMessageDialog(this, "目前不是錄音模式!!", "error", JOptionPane.WARNING_MESSAGE);
+				else {
+					main.dff.setModel("normal_Mod");
+					changeModel();
+					JOptionPane.showMessageDialog(this, "停止錄音", "停止錄音", 0);
+				}
+			} else if (e.getSource() == stopIdentifyBtn ) {
+				if(main.dff.getModel() != "identify_Mod") 
+					JOptionPane.showMessageDialog(this, "目前不是辨識模式!!", "error", JOptionPane.WARNING_MESSAGE);
+				else {
+					main.dff.setModel("normal_Mod");
+					changeModel();
+					JOptionPane.showMessageDialog(this, "退出辨識模式", "退出辨識模式", 0);
+				}
+			}
 
 		}
+
 	}
 
-	
+	public void changeModel() {
+		this.model = main.dff.getModel();
+		String st = "";
+		switch(model) {
+			case "testAmbientSound_Mod":
+				st = "辨識模式";
+				break;
+			case "normal_Mod":
+				st = "一般模式";
+				break;
+			case "record_Mod":
+				st = "錄音模式";
+				break;
+			case "identify_Mod":
+				st = "辨識模式";
+				break;
+		}
+		main.ioPan.tfModel.setText(st);
 
-	
+	}
 
 }

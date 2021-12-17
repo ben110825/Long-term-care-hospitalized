@@ -138,7 +138,7 @@ public class Compare {
 			sampleFile = loadFile(LoadFileName[i]); // 讀入樣本檔
 			double lengthRatio = (double) sampleFile.getCountRecord()
 					/ (double) identificationFile.getCountRecord(); // 長度比例
-			System.out.println("lengthRatio:"+lengthRatio);
+//			System.out.println("lengthRatio:"+lengthRatio);
 			if (lengthRatio > 1.5 || lengthRatio < 0.7) {
 				System.out.println("長度相差過大");
 				System.out.println("============================");
@@ -195,7 +195,7 @@ public class Compare {
 	}
 	public void storeResult() {	//儲存結果
 		try{
-			String st = "sound_source/identification_"+identificationFile.type+"/"+setStoredFileName(identificationFile.getTime(), identificationFile.type);
+			String st = "sound_source/identification_"+identificationFile.type+"/"+getStoredFileName(identificationFile.getTime(), identificationFile.type);
 			File dir_file = new File(st);
 			dir_file.createNewFile();
 			BufferedWriter buw = new BufferedWriter(new FileWriter(st));
@@ -211,7 +211,7 @@ public class Compare {
 	}
 		
 		
-	public String setStoredFileName(String file, FeatureType Type) {
+	public String getStoredFileName(String file, FeatureType Type) {
 		 return file + "_" +Type +".json";
 	}
 }

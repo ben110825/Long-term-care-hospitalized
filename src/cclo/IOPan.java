@@ -20,10 +20,10 @@ public class IOPan extends JPanel {
     int sLevel = -1;
     double error = 0.0;
     Scorer father;
-    JTextField tfSample = new JTextField();				
+    JTextField tfModel = new JTextField();				
     JTextField tfIdentification = new JTextField();		//需要辨識的檔案(未知)
     JTextField tfResult = new JTextField();
-    JLabel lbSample = new JLabel("<html><body>樣本資料夾<br><center>(已知)<center><body></html>");
+    JLabel lbModel = new JLabel("<html><body>目前模式<body></html>");
     JLabel lbFile   = new JLabel("<html><body>錄音檔案<br><center>(未知)<center><body></html>");
     String name[] = {
         "0 Do", "0 Do+", "0 Re", "0 Re+", "0 Mi", "0 Fa", "0 Fa+", "0 Sol", "0 Sol+", "0 La", "0 La+", "0 Si",
@@ -52,43 +52,43 @@ public class IOPan extends JPanel {
         main = main_;
 
         this.setLayout(new GridLayout(1, 8, 5, 5));
-        lbSample.setFont(new Font("標楷體", Font.BOLD, 24));
+        lbModel.setFont(new Font("標楷體", Font.BOLD, 24));
         lbFile.setFont(new Font("標楷體", Font.BOLD, 24));
         lbAcc.setFont(new Font("標楷體", Font.BOLD, 24));
-        tfSample.setFont(new Font("標楷體", Font.BOLD, 16));
-        tfIdentification.setFont(new Font("標楷體", Font.BOLD, 16));
+        tfModel.setFont(new Font("標楷體", Font.BOLD, 24));
+        tfIdentification.setFont(new Font("標楷體", Font.BOLD, 24));
         tfAcc.setFont(new Font("標楷體", Font.BOLD, 24));
         lbResult.setFont(new Font("標楷體", Font.BOLD, 24));
         tfResult.setFont(new Font("標楷體", Font.BOLD, 24));
 
-        lbSample.setHorizontalAlignment(JLabel.HORIZONTAL);
+        lbModel.setHorizontalAlignment(JLabel.HORIZONTAL);
         lbFile.setHorizontalAlignment(JLabel.HORIZONTAL);
         lbAcc.setHorizontalAlignment(JLabel.HORIZONTAL);
-        tfSample.setHorizontalAlignment(JLabel.HORIZONTAL);
+        tfModel.setHorizontalAlignment(JLabel.HORIZONTAL);
         tfIdentification.setHorizontalAlignment(JLabel.HORIZONTAL);
         tfAcc.setHorizontalAlignment(JLabel.HORIZONTAL);
         lbResult.setHorizontalAlignment(JLabel.HORIZONTAL);
         tfResult.setHorizontalAlignment(JLabel.HORIZONTAL);
 
         //ImageIcon levelIcon = new ImageIcon(new ImageIcon("level.png").getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH));
-        // lbSample.setIcon(levelIcon);
-        lbSample.setOpaque(true);
-        lbSample.setForeground(Color.WHITE);
-        lbSample.setBackground(new Color(38, 77, 0));
-        //tfSample.setBackground(new Color(38, 77, 0));
-        //tfSample.setForeground(Color.WHITE);
+        // lbModel.setIcon(levelIcon);
+        lbModel.setOpaque(true);
+        lbModel.setForeground(Color.WHITE);
+        lbModel.setBackground(new Color(38, 77, 0));
+        //tfModel.setBackground(new Color(38, 77, 0));
+        //tfModel.setForeground(Color.WHITE);
         // lbFile.setIcon(levelIcon);
         lbFile.setOpaque(true);
         lbFile.setForeground(Color.WHITE);
         lbFile.setBackground(new Color(140, 60, 32));
         //tfIdentification.setBackground(new Color(70, 90, 140));
         //tfIdentification.setForeground(Color.WHITE);
-        add(lbSample);
-        add(tfSample);
+        add(lbModel);
+        add(tfModel);
 
         add(lbFile);
         add(tfIdentification);
-        tfSample.setEditable(false);
+        tfModel.setEditable(false);
         tfIdentification.setEditable(false);
         tfResult.setEditable(false);
         lbAcc.setOpaque(true);
@@ -178,13 +178,13 @@ public class IOPan extends JPanel {
                 return false;
             }
             if (sLevel + bias >= 0) {
-          //      tfSample.setText(name[sLevel + bias]);
+          //      tfModel.setText(name[sLevel + bias]);
             }
          //   tfIdentification.setText(df.format(error));
             repaint();
             return true;
         } else {
-          //  tfSample.setText("");
+          //  tfModel.setText("");
           //  tfIdentification.setText("");
             return false;
         }

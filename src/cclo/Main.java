@@ -79,7 +79,7 @@ public class Main implements Share {
         scorer = new Scorer(this);
         // specFr.setVisible(false);
         // scorer.setVisible(false);
-        freqFr = new SpecLineChart("Body Signal", this);
+        freqFr = new SpecLineChart("Long-term-care-hospitalized System", this);
         // freqFr.pack();
         // RefineryUtilities.centerFrameOnScreen(freqFr);
 //        tFrame  = new DemoFrame(this);
