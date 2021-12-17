@@ -265,7 +265,7 @@ public class SpecLineChart extends JFrame implements ActionListener {
 		String st = "";
 		switch(model) {
 			case "testAmbientSound_Mod":
-				st = "辨識模式";
+				st = "測試環境音模式";
 				break;
 			case "normal_Mod":
 				st = "一般模式";
