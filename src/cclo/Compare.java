@@ -140,6 +140,9 @@ public class Compare {
 					/ (double) identificationFile.getCountRecord(); // 長度比例
 //			System.out.println("lengthRatio:"+lengthRatio);
 			if (lengthRatio > 1.5 || lengthRatio < 0.7) {
+				writeCompareLog(identificationFile.getTime()
+				, "長度相差過大"+"\r\n"
+				+ "============================"+"\r\n");
 				System.out.println("長度相差過大");
 				System.out.println("============================");
 				i++;
@@ -155,6 +158,13 @@ public class Compare {
 			System.out.println("辨識種類: " + identificationFile.getType());
 			System.out.println("樣本檔案相似度: " + acc + " %");
 			System.out.println("============================");
+			writeCompareLog(identificationFile.getTime(),
+			 "樣本名稱: "+sampleFile.getTime()+"\r\n"
+			+"樣本種類: " + sampleFile.getType()+"\r\n"
+			+"樣本檔案總數: " + sampleFile.getCountRecord()+"\r\n"
+			+"辨識種類: " + identificationFile.getType()+"\r\n"
+			+"樣本檔案相似度: " + acc + " %"+"\r\n"
+			+"============================"+"\r\n");
 			if (acc > maxSimilarity) { // 紀錄最像的
 				maxSimilarity = acc;
 				maxSimilarityLocation = LoadFileName[i];
@@ -170,11 +180,18 @@ public class Compare {
 			result = identificationFile.getType()+"";
 			System.out.println("* 最相似的是:"+identificationFile.getType());
 			System.out.println("* 相似度:"+maxSimilarity+"%");
+			writeCompareLog(identificationFile.getTime(),
+					 "* 最相似的是:"+identificationFile.getType()+"\r\n"
+					+"* 相似度:"+maxSimilarity+"%"+"\r\n");
 		}
 		else {
 			result = "X";
 			System.out.println("* 最相似的是: Unidentified");
 			System.out.println("* 相似度:"+maxSimilarity+"%");
+			writeCompareLog(identificationFile.getTime(),
+					 "* 最相似的是: X"+"\r\n"
+					+"* 相似度:"+maxSimilarity+"%"+"\r\n");
+
 		}
 		if(identificationFile.getCountRecord() >= 60 && identificationFile.getCountRecord()<=400)
 			storeResult();
@@ -209,7 +226,20 @@ public class Compare {
 		}
 		
 	}
-		
+	public void writeCompareLog(String fileName, String content) {
+		try{
+			String st = fileName += ".log";
+			String path = "./compare_log/";
+			File dir_file = new File(path+st);
+			dir_file.createNewFile();
+			FileWriter buw = new FileWriter(path+st,true);
+			buw.write(content);
+			buw.close();
+		}
+		catch(IOException e) {
+			
+		}
+	}
 		
 	public String getStoredFileName(String file, FeatureType Type) {
 		 return file + "_" +Type +".json";

@@ -24,7 +24,7 @@ public class IOPan extends JPanel {
     JTextField tfIdentification = new JTextField();		//需要辨識的檔案(未知)
     JTextField tfResult = new JTextField();
     JLabel lbModel = new JLabel("<html><body>目前模式<body></html>");
-    JLabel lbFile   = new JLabel("<html><body>錄音檔案<br><center>(未知)<center><body></html>");
+    JLabel lbFile   = new JLabel("<html><body>錄音檔案<body></html>");
     String name[] = {
         "0 Do", "0 Do+", "0 Re", "0 Re+", "0 Mi", "0 Fa", "0 Fa+", "0 Sol", "0 Sol+", "0 La", "0 La+", "0 Si",
         "1 Do", "1 Do+", "1 Re", "1 Re+", "1 Mi", "1 Fa", "1 Fa+", "1 Sol", "1 Sol+", "1 La", "1 La+", "1 Si",
@@ -50,8 +50,7 @@ public class IOPan extends JPanel {
     
     public IOPan(Main main_) {
         main = main_;
-
-        this.setLayout(new GridLayout(1, 8, 5, 5));
+        this.setLayout(new GridLayout(2, 4, 5, 5));
         lbModel.setFont(new Font("標楷體", Font.BOLD, 24));
         lbFile.setFont(new Font("標楷體", Font.BOLD, 24));
         lbAcc.setFont(new Font("標楷體", Font.BOLD, 24));
@@ -74,13 +73,13 @@ public class IOPan extends JPanel {
         // lbModel.setIcon(levelIcon);
         lbModel.setOpaque(true);
         lbModel.setForeground(Color.WHITE);
-        lbModel.setBackground(new Color(38, 77, 0));
+        lbModel.setBackground(Color.decode("#e76f51"));
         //tfModel.setBackground(new Color(38, 77, 0));
         //tfModel.setForeground(Color.WHITE);
         // lbFile.setIcon(levelIcon);
         lbFile.setOpaque(true);
         lbFile.setForeground(Color.WHITE);
-        lbFile.setBackground(new Color(140, 60, 32));
+        lbFile.setBackground(Color.decode("#2a9d8f"));
         //tfIdentification.setBackground(new Color(70, 90, 140));
         //tfIdentification.setForeground(Color.WHITE);
         add(lbModel);
@@ -93,7 +92,7 @@ public class IOPan extends JPanel {
         tfResult.setEditable(false);
         lbAcc.setOpaque(true);
         lbAcc.setForeground(Color.WHITE);
-        lbAcc.setBackground(new Color(80, 0, 80));
+        lbAcc.setBackground(Color.decode("#e9c46a"));
         //tfAcc.setBackground(new Color(80, 0, 80));
 //        tfAcc.setForeground(Color.WHITE);
 //        lbTone.setOpaque(true);
@@ -102,7 +101,7 @@ public class IOPan extends JPanel {
 
         lbResult.setOpaque(true);
         lbResult.setForeground(Color.WHITE);
-        lbResult.setBackground(new Color(15, 115, 140));
+        lbResult.setBackground(Color.decode("#f4a261"));
 
         add(lbAcc);
         add(tfAcc);

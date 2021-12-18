@@ -780,9 +780,9 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 
 			break;
 		case "identify_Mod":
-
 			Compare compare;
 			if (voiceAvg / shortVoiceAvg > 1.3 || hasFirstVoice) { // 啟動門檻
+				System.out.println("start");
 				hasFirstVoice = true;
 				if (tempPF.getCountRecord() == 0 && (voiceAvg / shortVoiceAvg > 1.3 || hasFirstVoice)) {
 					startpeakRecord();
@@ -798,11 +798,18 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 							tempPF.getPeak().remove(i);
 						}
 						tempPF.setCountRecord(tempPF.getCountRecord() - zeroCount);
-						pMain.ioPan.tfIdentification.setText("辨識檔已準備"); // 目前先使用路徑+檔名
 						if (tempPF.countRecord >= 60 && tempPF.countRecord <= 400) {
+							pMain.ioPan.tfIdentification.setText("辨識檔已準備"); // 目前先使用路徑+檔名
+							
 							compare = new Compare(tempPF);
 							pMain.ioPan.tfResult.setText(compare.result + "");
 							pMain.ioPan.tfAcc.setText(compare.resultAcc + "");
+						}
+						else if(tempPF.countRecord < 60) {
+							pMain.ioPan.tfIdentification.setText("錄音過短"); // 目前先使用路徑+檔名
+						}
+						else {
+							pMain.ioPan.tfIdentification.setText("錄音過長"); // 目前先使用路徑+檔名
 						}
 
 						hasFirstVoice = false;
@@ -854,7 +861,7 @@ public class DiscreteFourierTransform extends BaseDataProcessor implements Share
 			buw.write(tempPF.gsonout());
 			buw.close();
 			System.out.println("儲存完畢");
-			JOptionPane.showMessageDialog(pMain.freqFr, "已儲存");
+			JOptionPane.showMessageDialog(pMain.freqFr, "結果已儲存完畢");
 
 		} catch (Exception e) {
 
