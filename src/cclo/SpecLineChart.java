@@ -77,29 +77,29 @@ public class SpecLineChart extends JFrame implements ActionListener {
 		q2Pan.setLayout(new GridLayout(2, 5, 5, 5));
 		startRecordSampleBtn = new JButton("錄製樣本檔案");
 		startRecordSampleBtn.setFont(new Font("標楷體", Font.BOLD, 40));
-		startRecordSampleBtn.setBackground(Color.decode("#011627"));
-		startRecordSampleBtn.setForeground(Color.decode("#2ec4b6"));
+		startRecordSampleBtn.setBackground(Color.decode("#14213d"));
+		startRecordSampleBtn.setForeground(Color.white);
 		startRecordSampleBtn.addActionListener(this);
 		q2Pan.add(startRecordSampleBtn);
 
 		stopRecordSampleBtn = new JButton("停止錄製樣本檔案");
 		stopRecordSampleBtn.setFont(new Font("標楷體", Font.BOLD, 40));
-		stopRecordSampleBtn.setBackground(Color.decode("#011627"));
-		stopRecordSampleBtn.setForeground(Color.decode("#e71d36"));
+		stopRecordSampleBtn.setBackground(Color.decode("#14213d"));
+		stopRecordSampleBtn.setForeground(Color.white);
 		stopRecordSampleBtn.addActionListener(this);
 		q2Pan.add(stopRecordSampleBtn);
 
 		startIdentifyBtn = new JButton("進入辨識模式");
 		startIdentifyBtn.setFont(new Font("標楷體", Font.BOLD, 40));
-		startIdentifyBtn.setBackground(Color.decode("#011627"));
-		startIdentifyBtn.setForeground(Color.decode("#2ec4b6"));
+		startIdentifyBtn.setBackground(Color.decode("#14213d"));
+		startIdentifyBtn.setForeground(Color.white);
 		startIdentifyBtn.addActionListener(this);
 		q2Pan.add(startIdentifyBtn);
 
 		stopIdentifyBtn = new JButton("退出辨識模式");
 		stopIdentifyBtn.setFont(new Font("標楷體", Font.BOLD, 40));
-		stopIdentifyBtn.setBackground(Color.decode("#011627"));
-		stopIdentifyBtn.setForeground(Color.decode("#e71d36"));
+		stopIdentifyBtn.setBackground(Color.decode("#14213d"));
+		stopIdentifyBtn.setForeground(Color.white);
 		stopIdentifyBtn.addActionListener(this);
 		q2Pan.add(stopIdentifyBtn);
 
